@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TenhouLoggerV0.1</title>
+    <style>
+      body{ margin: 0; }
+    </style>
+  </head>
+  <body>
+    <webview id="webview" src='http://tenhou.net/0/' style="width:728px; height:620px" plugins></webview>
+  </body>
+
+<script>
+  const webview = document.getElementById('webview');
+  webview.addEventListener('dom-ready',function(){
+    this.executeJavaScript('document.getElementsByTagName("embed")[0].oncontextmenu=function(){ return false; }');
+  });
+
+  webview.addEventListener('contextmenu',function(ev){
+    this.sendInputEvent({
+      type:'keyDown',
+      keyCode:'Escape'
+    });
+    setTimeout(()=>{
+      this.sendInputEvent({
+      type:'keyUp',
+      keyCode:'Escape'
+      });
+    },50);
+  });
+</script>
+
+</html>

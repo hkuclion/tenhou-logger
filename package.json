@@ -1,0 +1,22 @@
+{
+  "name": "tenhou-logger",
+  "version": "1.0.0",
+  "description": "TenhouLogger",
+  "main": "backend/main.js",
+  "licence": "MIT",
+  "scripts": {
+    "start": "electron . --harmony-async-await"
+  },
+  "keywords": [
+    "Tenhou",
+    "logger"
+  ],
+  "author": "hkuclion <hkuclion@qq.com> (http://hkuclion.com)",
+  "dependencies": {
+    "electron-settings": "^2.2.2",
+    "electron-window-state": "^4.0.1"
+  },
+  "os": [
+    "win32"
+  ]
+}
