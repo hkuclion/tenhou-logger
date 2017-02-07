@@ -1,4 +1,4 @@
-define(['jquery','model/Side','model/Content','hkuc/dialog'],function ($,Side,Content,HkucDialog) {
+define(['jquery','model/Side','model/Content'],function ($,Side,Content) {
 	return class Controller {
 		constructor() {
 			this.createView();

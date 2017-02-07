@@ -3,7 +3,7 @@ const path = require('path');
 const url = require('url');
 const actions = require('./AsyncAction.js');
 
-const windowStateKeeper = require('electron-window-state');
+const WindowStateManager = require('electron-window-state-manager');
 const ElectronSettings = require('electron-settings');
 
 let app_path = global.app_path = path.dirname(__dirname);
@@ -13,28 +13,27 @@ let front_path = global.front_path = path.join(app_path, 'frontend');
 //require('./flash.js');
 
 let tenhouWindow;
+let mainWindow;
 
 function createWindow() {
-	let mainWindowState = windowStateKeeper({
+	const mainWindowState = new WindowStateManager('mainWindow', {
 		defaultWidth:1280,
 		defaultHeight:720
 	});
 
-	global.mainWindow = new BrowserWindow({
+	global.mainWindow = mainWindow = new BrowserWindow({
 		x:mainWindowState.x,
 		y:mainWindowState.y,
 		width:mainWindowState.width,
 		height:mainWindowState.height,
 		icon:path.join(backend_path, 'images/lion.png'),
-		webPreferences:{
-			partition:'persist:logger'
-		},
-		show:false,
 	});
 
-	mainWindowState.manage(global.mainWindow);
+	if (mainWindowState.maximized) {
+		mainWindow.maximize();
+	}
 
-	global.mainWindow.loadURL(url.format({
+	mainWindow.loadURL(url.format({
 		pathname:path.join(front_path, 'index.html'),
 		protocol:'file:',
 		slashes:true
@@ -85,18 +84,14 @@ function createWindow() {
 			},
 			{
 				label:'全屏',
-				accelerator:(function () {
-					return (process.platform === 'darwin') ? 'Ctrl+Command+F' : 'F11'
-				})(),
+				accelerator:(()=>process.platform === 'darwin' ? 'Ctrl+Command+F' : 'F11')(),
 				click:function (item, focusedWindow) {
 					if (focusedWindow) focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
 				}
 			},
 			{
 				label:'开发者工具',
-				accelerator:(function () {
-					return (process.platform === 'darwin') ? 'Alt+Command+I' : 'F12';
-				})(),
+				accelerator:(() => process.platform === 'darwin' ? 'Alt+Command+I' : 'F12')(),
 				click:function (item, focusedWindow) {
 					if (focusedWindow) focusedWindow.toggleDevTools()
 				}
@@ -118,28 +113,35 @@ function createWindow() {
 	let menuItem_Tenhou = new MenuItem({
 		label:'天凤',
 		type:'normal',
-		click:function(item, focusedWindow){
-			
+		click:function (item, focusedWindow) {
+
 		}
 	});
 
 	mainMenu.append(menuItem_Paifu);
 	mainMenu.append(menuItem_View);
 	mainMenu.append(menuItem_Option);
-	global.mainWindow.setMenu(mainMenu);
+	mainWindow.setMenu(mainMenu);
 
-	global.mainWindow.on('closed', function () {
-		global.mainWindow = null
+	mainWindow.on('closed', () => {
+		mainWindow = null;
 	});
-	global.mainWindow.on('ready-to-show', function () {
-		global.mainWindow.show();
-		global.mainWindow.focus();
+
+	mainWindow.on('close',()=>{
+		mainWindowState.saveState(mainWindow);
+	});
+
+	mainWindow.on('ready-to-show', ()=>{
+		mainWindow.show();
+		mainWindow.focus();
 	});
 }
 
-app.on('ready', ()=>{
+app.on('ready', () => {
 	let shouldQuit = app.makeSingleInstance((cmdLine) => {
-		global.mainWindow.focus();
+		if (mainWindow) {
+			mainWindow.focus();
+		}
 		return true;
 	});
 
@@ -147,14 +149,14 @@ app.on('ready', ()=>{
 	else createWindow();
 });
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', ()=> {
 	if (process.platform !== 'darwin') {
 		app.quit()
 	}
 });
 
 app.on('activate', function () {
-	if (global.mainWindow === null) {
+	if (mainWindow === null) {
 		createWindow()
 	}
 });

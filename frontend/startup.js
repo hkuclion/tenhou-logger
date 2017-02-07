@@ -31,11 +31,11 @@ define('artDialog/black', ['artDialog/plus', 'css!vendor/artDialog/black.css'], 
 	return artDialog;
 });
 
-requirejs(['model/Controller'], function (Controller) {
+requirejs(['model/Controller','hkuc/dialog'], function (Controller, HkucDialog) {
 	let controller=new Controller();
 	const ipcRenderer = require('electron').ipcRenderer;
 
-	ipcRenderer.on('set_paifu_source', function (event) {
+	ipcRenderer.on('set_paifu_source', (event)=>{
 		HkucDialog.confirm('配置来源', null, () => {
 			event.sender.send('set_paifu_source', ['Win', 'Flash'])
 		});

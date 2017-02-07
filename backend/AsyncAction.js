@@ -67,13 +67,13 @@ class AsyncAction{
 		}
 	}
 
-	/*static reject(remote_action, ...result) {
+	static reject(remote_action, ...result) {
 		let wait = waits.get(remote_action);
 		if (wait) {
 			waits.delete(remote_action);
 			wait.reject(...result);
 		}
-	}*/
+	}
 }
 
 let waits = new Map();
