@@ -1,14 +1,15 @@
-define(['jquery','hkuc/template','data/templates'],function($,Template,templates){
+define(['jquery','hkuc/template','data/templates','manager/Setting'],function($,Template,templates, Setting){
 	Template.compile('side_toggle',templates.side_toggle);
 
 	class Side{
-		constructor(delegate){
+		constructor(){
 			Object.assign(this,{
-				delegate,
 				closed:false,
 			});
 
 			this.createView();
+
+			this.toggle(Setting.get('sidebar_closed'));
 		}
 
 		createView(){
@@ -22,10 +23,14 @@ define(['jquery','hkuc/template','data/templates'],function($,Template,templates
 			this.$view.append(this.$side_toggle);
 		}
 
-		toggle(){
-			this.closed = !this.closed;
-			this.delegate.before_toggle(this.closed);
+		toggle(closed){
+			if(!arguments.length){
+				closed = !this.closed;
+			}
+			this.closed = closed;
+
 			this.$view.toggleClass('closed', this.closed);
+			Setting.set('sidebar_closed',this.closed);
 		}
 	}
 

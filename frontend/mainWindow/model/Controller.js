@@ -13,11 +13,7 @@ define(['jquery','model/Side','model/Content'],function ($,Side,Content) {
 		}
 
 		createSide(){
-			this.side = new Side({
-				before_toggle:(will_be_closed)=>{
-
-				}
-			});
+			this.side = new Side();
 			this.$view.append(this.side.$view);
 		}
 
