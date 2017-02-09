@@ -1,6 +1,6 @@
 {
   "name": "tenhou-logger",
-  "productName":"Tenhou Logger",
+  "productName":"TenhouLogger",
   "version": "1.0.0",
   "description": "TenhouLogger",
   "main": "backend/main.js",

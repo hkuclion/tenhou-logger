@@ -1,21 +1,20 @@
 const {BrowserWindow, app,dialog} = require('electron');
-
-let windows={};
-
-
-
+const WindowManager = require('./WindowManager');
+require('./flash');
 
 app.on('ready', () => {
+	let mainWindow;
+
 	let shouldQuit = app.makeSingleInstance((cmdLine) => {
-		if (windows.main) {
-			if (windows.main.isMinimized()) windows.main.restore();
-			windows.main.focus();
+		if (mainWindow) {
+			if (mainWindow.isMinimized()) mainWindow.restore();
+			mainWindow.focus();
 		}
 		return true;
 	});
 
 	if (shouldQuit) app.quit(0);
-	else windows.main = require('./mainWindow/window.js');
+	else mainWindow = WindowManager.getWindow('main');
 });
 
 app.on('window-all-closed', ()=> {
@@ -26,7 +25,7 @@ app.on('window-all-closed', ()=> {
 
 /* Mac
 app.on('activate', function () {
-	if (windows.main === null) {
-		windows.main = require('./mainWindow.js');
+	if (mainWindow === null) {
+		mainWindow = require('./mainWindow.js');
 	}
 });*/

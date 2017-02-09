@@ -1,4 +1,5 @@
 const {app, Menu, MenuItem,dialog} = require('electron');
+const WindowManager=require('../WindowManager');
 
 let mainMenu = new Menu();
 let menuItem_Paifu = new MenuItem({
@@ -42,7 +43,7 @@ let menuItem_View = new MenuItem({
 			label:'刷新',
 			accelerator:'F5',
 			click:function (item, focusedWindow) {
-				if (focusedWindow) focusedWindow.reload()
+				if (focusedWindow) focusedWindow.reload();
 			}
 		},
 		{
@@ -87,13 +88,14 @@ let menuItem_Tenhou = new MenuItem({
 	label:'天凤',
 	type:'normal',
 	click:function (item, focusedWindow) {
-
+		WindowManager.getWindow('tenhou')
 	}
 });
 
 mainMenu.append(menuItem_Paifu);
 mainMenu.append(menuItem_View);
 mainMenu.append(menuItem_Option);
+mainMenu.append(menuItem_Tenhou);
 
 module.exports = function(mainWindow){
 	mainWindow.setMenu(mainMenu);
