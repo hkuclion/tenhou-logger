@@ -1,6 +1,18 @@
 const {BrowserWindow, app,dialog} = require('electron');
-const WindowManager = require('./WindowManager');
-require('./flash');
+const WindowManager = require('./utility/WindowManager');
+
+//flash support
+let ppapi_flash_path = app.getPath('pepperFlashSystemPlugin');
+if (ppapi_flash_path) {
+	app.commandLine.appendSwitch('ppapi-flash-path', ppapi_flash_path);
+}
+
+global.alert = (message) => {
+	if(typeof(message) != 'string'){
+		message = JSON.stringify(message);
+	}
+	dialog.showMessageBox({message});
+};
 
 app.on('ready', () => {
 	let mainWindow;

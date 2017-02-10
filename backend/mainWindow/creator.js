@@ -1,7 +1,7 @@
-const {BrowserWindow, dialog, ipcMain, Menu, MenuItem} = require('electron');
+const {BrowserWindow, dialog, ipcMain, Menu, MenuItem,app} = require('electron');
 const path = require('path');
 const url = require('url');
-const {frontend_path, backend_path} = require('./../app_path');
+const {frontend_path, backend_path} = require('./../utility/app_path');
 
 const WindowStateManager = require('electron-window-state-manager');
 const ElectronSettings = require('electron-settings');

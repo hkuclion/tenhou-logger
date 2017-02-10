@@ -34,4 +34,10 @@ requirejs(['manager/Setting','model/Controller'], function (Setting,Controller) 
 	Setting.initialize().then(()=>{
 		new Controller();
 	});
+
+	let ipcRenderer = require('electron').ipcRenderer;
+
+	ipcRenderer.on('SHOW_PAIFU',(event,file)=>{
+		console.log(file);
+	})
 });

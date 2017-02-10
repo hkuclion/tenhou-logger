@@ -1,5 +1,7 @@
 const {app, Menu, MenuItem,dialog} = require('electron');
-const WindowManager=require('../WindowManager');
+const WindowManager=require('../utility/WindowManager');
+const Operation = require('./Operation');
+
 
 let mainMenu = new Menu();
 let menuItem_Paifu = new MenuItem({
@@ -28,9 +30,22 @@ let menuItem_Paifu = new MenuItem({
 		},
 		{
 			label:'查看本地',
-			click:function(){
+			click:function() {
+				let local_sol = Operation.get_local_sol();
 
-			}//actions.getLocalPaifu
+				if (!local_sol) {
+					dialog.showMessageBox({
+						type:'info',
+						message:'获取本地牌谱失败',
+					});
+					return;
+				}
+
+				WindowManager.getWindow('main').webContents.send(
+					'SHOW_PAIFU',
+					local_sol.data.logstr
+				);
+			}
 		},
 	],
 });
