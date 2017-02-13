@@ -1,0 +1,19 @@
+body{ margin:0; }
+
+ul.list { margin: 0; list-style: none; padding: 0; }
+#source_list li { line-height: 1.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#source_list li::before { background: lightcoral; color: #fff; padding: 0 3px; border-radius: 0.2em; margin: 0 0.5em 0 0.2em; text-align: center }
+#source_list li.default::before{ background: darkgreen; }
+#source_list li[data-type=flash]::before,
+#source_list li[data-type=local]::before{ content: "flash"; }
+#source_list li[data-type=win]::before { content: "\00a0win\00a0"; }
+#source_list li:nth-child(2n+1) { background: #e6e6e6 }
+#source_list li:nth-child(2n) { background: #f3f3f3; }
+#source_list li.selected{ background: lightyellow; }
+
+#source_list .operation a::after { margin-left: 0.2em; }
+#add_source::after { content: "添加"; }
+#remove_source::after { content: "移除"; }
+#set_default::after { content: "设为默认"; }
+
+.button{ line-height: 1.25; padding: 0 0.5em; -webkit-appearance: button; -moz-appearance: button; appearance: button; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }

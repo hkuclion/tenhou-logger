@@ -3,8 +3,21 @@
 <head>
 	<meta charset="UTF-8">
 	<title>设置牌谱来源</title>
+	<link rel="stylesheet" href="../shared/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="global.css">
+	<script src="../shared/jQuery/jquery-3.1.1.min.js"></script>
+	<script src="../shared/RequireJS/require.js"></script>
+	<script src="../shared/RequireJS/config.js"></script>
+	<script src="startup.js"></script>
 </head>
 <body>
-
+	<div id="source_list">
+		<div class="operation">
+			<a id="add_source" class="fa fa-plus button"></a>
+			<a id="remove_source" class="fa fa-minus button"></a>
+			<a id="set_default" class="fa fa-check-square-o button"></a>
+		</div>
+		<ul class="list"></ul>
+	</div>
 </body>
 </html>

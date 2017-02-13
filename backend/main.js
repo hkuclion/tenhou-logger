@@ -11,7 +11,7 @@ global.alert = (message) => {
 	if(typeof(message) != 'string'){
 		message = JSON.stringify(message);
 	}
-	dialog.showMessageBox({message});
+	dialog.showMessageBox({title:'alert',detail:message});
 };
 
 app.on('ready', () => {

@@ -4,8 +4,8 @@
 	<meta charset="UTF-8">
 	<title>Tenhou</title>
 	<style>
-		body { margin: 0; overflow: hidden; }
-		body,html{ width:100%; height:100%; }
+		body { margin: 0; }
+		body,html{ width:100%; height:100%; overflow: hidden; }
 	</style>
 </head>
 <body>
@@ -35,10 +35,5 @@
 		if(ev.explicitSet)document.title = ev.title;
 	});
 </script>
-<script defer>
-	require('electron').remote.getCurrentWindow().setSize(
-		728 * 2 - document.documentElement.clientWidth,
-		620 * 2 - document.documentElement.clientHeight
-	);
-</script>
+
 </html>

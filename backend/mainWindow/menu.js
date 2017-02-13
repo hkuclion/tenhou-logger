@@ -96,11 +96,17 @@ let menuItem_Option = new MenuItem({
 
 			}//actions.clearSetting
 		},
+		{
+			label:'牌谱来源配置',
+			click:function (item, focusedWindow) {
+				WindowManager.getWindow('paifuSourceConfig');
+			}
+		}
 	],
 });
 
 let menuItem_Tenhou = new MenuItem({
-	label:'天凤',
+	label:'天凤 (&T)',
 	type:'normal',
 	click:function (item, focusedWindow) {
 		WindowManager.getWindow('tenhou')
@@ -112,6 +118,6 @@ mainMenu.append(menuItem_View);
 mainMenu.append(menuItem_Option);
 mainMenu.append(menuItem_Tenhou);
 
-module.exports = function(mainWindow){
-	mainWindow.setMenu(mainMenu);
+module.exports = function(window){
+	window.setMenu(mainMenu);
 };

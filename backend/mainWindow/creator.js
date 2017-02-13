@@ -1,4 +1,4 @@
-const {BrowserWindow, dialog, ipcMain, Menu, MenuItem,app} = require('electron');
+const {BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 const {frontend_path, backend_path} = require('./../utility/app_path');
@@ -9,41 +9,42 @@ ElectronSettings.defaults({
 	sidebar_closed:false,
 });
 
-const mainWindowState = new WindowStateManager('mainWindow', {
+const mainWindowState = new WindowStateManager(path.basename(__dirname), {
 	defaultWidth:1280,
 	defaultHeight:720
 });
 
 module.exports = function(){
-	let mainWindow = new BrowserWindow({
+	let window = new BrowserWindow({
 		x:mainWindowState.x,
 		y:mainWindowState.y,
 		width:mainWindowState.width,
 		height:mainWindowState.height,
 		icon:path.join(backend_path, 'lion.png'),
+		backgroundColor:'#55a9f1',
 		show:false,
 	});
 
 	if (mainWindowState.maximized) {
-		mainWindow.maximize();
+		window.maximize();
 	}
 
-	require('./menu')(mainWindow);
+	require('./menu')(window);
 
-	mainWindow.loadURL(url.format({
-		pathname:path.join(frontend_path, 'mainWindow', 'index.html'),
+	window.loadURL(url.format({
+		pathname:path.join(frontend_path, path.basename(__dirname), 'index.html'),
 		protocol:'file:',
 		slashes:true
 	}));
 
-	mainWindow.on('close', () => {
-		mainWindowState.saveState(mainWindow);
+	window.on('close', () => {
+		mainWindowState.saveState(window);
 	});
 
-	mainWindow.on('ready-to-show', () => {
-		mainWindow.show();
-		mainWindow.focus();
+	window.on('ready-to-show', () => {
+		window.show();
+		window.focus();
 	});
 
-	return mainWindow;
+	return window;
 };

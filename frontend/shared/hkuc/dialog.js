@@ -18,7 +18,7 @@ define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_D
 	});
 
 	return class HKUC_DIALOG{
-		static alert(message, options) {
+		static alert(message, options={}) {
 			if(typeof options == 'string'){
 				options = {title:options};
 			}
@@ -27,7 +27,7 @@ define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_D
 			return this.create(options);
 		}
 
-		static confirm(message,options, okCallback = noOperation, cancelCallback = noOperation){
+		static confirm(message,options={}, okCallback = noOperation, cancelCallback = noOperation){
 			if(typeof(options) == 'string'){
 				options = {title:options};
 			}
@@ -43,7 +43,7 @@ define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_D
 			return this.create(options);
 		}
 
-		static prompt(message,options, okCallback = noOperation, cancelCallback = noOperation){
+		static prompt(message,options={}, okCallback = noOperation, cancelCallback = noOperation){
 			if(typeof(options) == 'string'){
 				options = {title:options};
 			}
@@ -91,7 +91,7 @@ define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_D
 			console.log('取消');
 		});
 		*/
-		static form(message,options, okCallback = noOperation, cancelCallback = noOperation){
+		static form(message,options={}, okCallback = noOperation, cancelCallback = noOperation){
 			if (typeof(options) == 'string') {
 				options = {title:options};
 			}
@@ -104,16 +104,15 @@ define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_D
 					if(!field_info.name)continue;
 					let field_html='<tr><td class="hkuc_dialog_form_label">'+(field_info.label? field_info.label: field_info.name)+'</td><td class="hkuc_dialog_form_field">';
 
-
 					switch(field_info.type){
 						case 'text': {
 							let default_value = 'value' in field_info?`value ="${HKUC_DIALOG_UTIL.html_encode(field_info.value)}"` : '';
-							field_html += `<input type="text" name="${field_info.name}" ${default_value} />`;
+							field_html += `<input type="text" ${field_info.disabled?' disabled':''} ${field_info.readonly ? ' readonly' : ''} name="${field_info.name}" ${default_value} />`;
 							break;
 						}
 						case 'password':{
 							let default_value = 'value' in field_info ? `value ="${HKUC_DIALOG_UTIL.html_encode(field_info.value)}"` : '';
-							field_html += `<input type="password" name="${field_info.name}" ${default_value} />`;
+							field_html += `<input type="password" ${field_info.disabled ? ' disabled' : ''} ${field_info.readonly ? ' readonly' : ''} name="${field_info.name}" ${default_value} />`;
 							break;
 						}
 						case 'radio':
@@ -131,14 +130,14 @@ define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_D
 						}
 						case 'checker':{
 							let default_value = 'value' in field_info && field_info.value ? 'checked="checked"' : '';
-							field_html += `<input type="hidden" name="${field_info.name}" value="" />`;
-							field_html += `<input type="checkbox" name="${field_info.name}" value="1" ${default_value} />`;
+							field_html += `<input type="hidden" ${field_info.disabled ? ' disabled' : ''} ${field_info.readonly ? ' readonly' : ''} name="${field_info.name}" value="" />`;
+							field_html += `<input type="checkbox" ${field_info.disabled ? ' disabled' : ''} ${field_info.readonly ? ' readonly' : ''} name="${field_info.name}" value="1" ${default_value} />`;
 						}
 						case 'select': {
 							if (!field_info.options) {
 								break;
 							}
-							field_html+=`<select name="${field_info.name}">`;
+							field_html+=`<select ${field_info.disabled ? ' disabled' : ''} ${field_info.readonly ? ' readonly' : ''} name="${field_info.name}">`;
 							for (let key in field_info.options) {
 								let default_value = 'value' in field_info && key == field_info.value ? 'selected="selected"' : '';
 								field_html += `<option value="${HKUC_DIALOG_UTIL.html_encode(key)}" ${default_value}>${field_info.options[key]}</option>`;
@@ -148,7 +147,7 @@ define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_D
 						}
 						case 'textarea':{
 							let default_value = 'value' in field_info ? HKUC_DIALOG_UTIL.html_encode(field_info.value) : '';
-							field_html += `<textarea name="${field_info.name}">${default_value}</textarea>`;
+							field_html += `<textarea ${field_info.disabled ? ' disabled' : ''} ${field_info.readonly ? ' readonly' : ''} name="${field_info.name}">${default_value}</textarea>`;
 							break;
 						}
 						default:{
@@ -181,6 +180,11 @@ define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_D
 				okValue:'确定',
 				cancelValue:'取消',
 			}, defaults.form, defaults.all, options);
+
+			if(options.extra){
+				options.content+=options.extra;
+				delete options.extra;
+			}
 
 			let dialog = this.create(options);
 

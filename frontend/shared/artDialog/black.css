@@ -36,14 +36,19 @@
 }
 .artDialog-black .ui-dialog-close:hover,
 .artDialog-black .ui-dialog-close{
-	right:0;
+	right:6px;
 	padding: 0;
-	top:6px;
+	top:9px;
 	color: white;
 	z-index: 2;
 	position: relative;
 	opacity: 0.5;
 	text-shadow: 0 0 2px black;
+	font-family: Arial,sans-serif;
+}
+.artDialog-black .ui-dialog-close::-moz-focus-inner {
+	padding: 0;
+	border: 0;
 }
 .artDialog-black .ui-dialog-close:hover{
 	color:white;
@@ -57,6 +62,7 @@
 }
 .artDialog-black .ui-dialog-content{
 	display: block;
+	word-break:break-all;
 }
 .artDialog-black .ui-dialog-body,
 .artDialog-black .ui-dialog-footer{

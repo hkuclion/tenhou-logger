@@ -1,11 +1,13 @@
 define(function(){
 	const ElectronSettings = require('electron').remote.require('electron-settings');
 
-	let setting;
+	let setting={};
 
 	return class Setting{
 		static initialize(){
-			return ElectronSettings.get().then((value)=>{setting=value;});
+			return ElectronSettings.get().then((value)=>{
+				Object.assign(setting,value);
+			});
 		}
 		static get(keyPath){
 			let paths = keyPath.split('.');
@@ -31,10 +33,12 @@ define(function(){
 				object = object[key]
 			}
 			object[keys.shift()] = value;
+
+			ElectronSettings.get().then((value) => {
+				console.log(setting);
+			})
+
 			return ElectronSettings.set(keyPath, value);
 		}
 	}
-
-
-
 });

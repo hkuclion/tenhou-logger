@@ -1,4 +1,4 @@
-define(['jquery','hkuc/template','data/templates','manager/Setting'],function($,Template,templates, Setting){
+define(['jquery','hkuc/template','data/templates','shared/manager/Setting'],function($,Template,templates, Setting){
 	Template.compile('side_toggle',templates.side_toggle);
 
 	class Side{
@@ -30,7 +30,9 @@ define(['jquery','hkuc/template','data/templates','manager/Setting'],function($,
 			this.closed = closed;
 
 			this.$view.toggleClass('closed', this.closed);
-			Setting.set('sidebar_closed',this.closed);
+			if (!arguments.length) {
+				Setting.set('sidebar_closed', this.closed);
+			}
 		}
 	}
 

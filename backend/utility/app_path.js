@@ -1,6 +1,7 @@
+const {app} = require('electron');
 const path = require('path');
 
-let root_path = path.dirname(path.dirname(__dirname));
+let root_path = app.getAppPath();
 let backend_path = path.join(root_path, 'backend');
 let frontend_path = path.join(root_path, 'frontend');
 
