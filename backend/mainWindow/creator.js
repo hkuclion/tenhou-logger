@@ -32,7 +32,7 @@ module.exports = function(){
 	require('./menu')(window);
 
 	window.loadURL(url.format({
-		pathname:path.join(frontend_path, path.basename(__dirname), 'index.html'),
+		pathname:path.join(frontend_path, path.basename(__dirname)+'.html'),
 		protocol:'file:',
 		slashes:true
 	}));

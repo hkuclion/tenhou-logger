@@ -42,10 +42,11 @@ let menuItem_Paifu = new MenuItem({
 				}
 
 				WindowManager.getWindow('main').webContents.send(
-					'SHOW_PAIFU',
+					'SHOW_PAIFU_LOCAL',
 					local_sol.data.logstr
 				);
-			}
+			},
+			accelerator:'Ctrl+R'
 		},
 	],
 });

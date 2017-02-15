@@ -1,4 +1,4 @@
-define(['artTemplate','module'], function (artTemplate,module) {
+define(['lib/artTemplate/template','module'], function (artTemplate,module) {
 	artTemplate.helper('debug', function (...args) {
 		console.debug(
 			"%cDEBUG",
@@ -132,8 +132,24 @@ define(['artTemplate','module'], function (artTemplate,module) {
 			return artTemplate_get(template_id);
 		}
 
-		static compile(template_id,template_content){
+		static compile(template_id,template_content,options=null){
+			let org_config={};
+			if(options){
+				for(let key in options){
+					if(options.hasOwnProperty(key)){
+						org_config[key]= artTemplate.defaults[key];
+						artTemplate.config(key,options[key]);
+					}
+				}
+			}
 			compiled[template_id] = artTemplate.compile(template_content);
+			if(options){
+				for (let key in org_config) {
+					if (org_config.hasOwnProperty(key)) {
+						artTemplate.config(key, org_config[key]);
+					}
+				}
+			}
 		}
 
 		static render(template_id,data={}){

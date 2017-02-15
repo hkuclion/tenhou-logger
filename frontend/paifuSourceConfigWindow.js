@@ -1,4 +1,4 @@
-requirejs(['../shared/manager/Setting','jquery','hkuc/dialog'], function (Setting,$, HKUCDialog) {
+requirejs(['model/Setting','jquery','lib/hkuc/dialog'], function (Setting,$, HKUCDialog) {
 	let remote= require('electron').remote;
 	let path = remote.require('path');
 	let fs = remote.require('fs');

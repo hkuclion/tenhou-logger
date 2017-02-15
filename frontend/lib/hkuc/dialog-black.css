@@ -1,0 +1,103 @@
+.dialog-black.ui-dialog {
+	background: none;
+	border: 1px solid rgb(55, 55, 55);
+	overflow: hidden;
+	box-shadow: 0 3px 20px rgba(0, 0, 0, 0.6);
+	border-radius: 6px;
+	padding:0;
+}
+.dialog-black.ui-dialog .ui-dialog-titlebar {
+	background: linear-gradient(
+		to bottom,
+		rgba(219, 219, 219, 0.76) 1px,
+		rgba(183, 183, 183, 0.63) 1px,
+		rgba(101, 101, 101, 0.63) 50%,
+		rgba(70, 70, 70, 0.63) 50%,
+		rgba(10, 10, 10, 0.63) calc(100% - 1px),
+		rgba(0, 0, 0, 0.67) calc(100% - 1px)
+	);
+}
+.dialog-black.ui-dialog .ui-dialog-title {
+	color: white;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7);
+}
+.dialog-black.dialog-persist .ui-dialog-titlebar-close{
+	display: none;
+}
+.dialog-black.ui-dialog .ui-dialog-titlebar-close{
+	background: none;
+	border:0;
+	overflow: hidden;
+}
+.dialog-black.ui-dialog .ui-dialog-titlebar-close:active,
+.dialog-black.ui-dialog .ui-dialog-titlebar-close:focus{
+	outline: none;
+}
+.dialog-black.ui-dialog .ui-dialog-titlebar-close::before {
+	position: absolute;
+	left: 0;top:0;right:0;bottom:0;
+	text-align: center;
+	color: white;
+	text-indent: 0;
+	content:'×';
+	font-size:20px;
+	font-family: Arial,sans-serif;
+	font-weight: bold;
+	text-shadow: 0 0 2px black;
+	opacity: 0.7;
+}
+.dialog-black.ui-dialog .ui-dialog-titlebar-close:hover::before,
+.dialog-black.ui-dialog .ui-dialog-titlebar-close:active::before,
+.dialog-black.ui-dialog .ui-dialog-titlebar-close:focus::before{
+	text-shadow: 0 0 1px black, 0 0 2px black, 0 0 3px white, 0 0 4px white;
+}
+.dialog-black.ui-dialog .ui-dialog-titlebar-close:active::before{
+	text-shadow: 0 0 1px black, 0 0 2px black, 0 0 3px white, 0 0 4px white;
+	opacity:1;
+}
+.dialog-black.ui-dialog .ui-dialog-content,
+.dialog-black.ui-dialog .ui-dialog-buttonpane{
+	background: #f7f7f7;
+}
+.dialog-black.ui-dialog .ui-dialog-buttonpane{
+	padding-top:0.8em;
+	margin-top: 0;
+}
+.dialog-black.ui-dialog .ui-dialog-buttonpane button {
+	border-radius: 4px;
+	border: 1px solid #adadad;
+	outline:0;
+	font:menu;
+	font-size:14px;
+}
+.dialog-black.ui-dialog button:focus {
+	outline: thin dotted #333;
+	outline: 5px auto -webkit-focus-ring-color;
+	outline-offset: -2px;
+}
+.dialog-black.ui-dialog button:hover,
+.dialog-black.ui-dialog button:focus {
+	text-decoration: none;
+}
+.dialog-black.ui-dialog button:active {
+	background-image: none;
+	outline: 0;
+	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.dialog-black.ui-dialog .ui-dialog-buttonpane button.ui-dialog-default{
+	background: linear-gradient(
+		to bottom,
+		#33bbee 0%,
+		#2288cc 100%
+	);
+	border: 1px solid #357ebd;
+}
+.dialog-black.ui-dialog .ui-dialog-buttonpane button.ui-dialog-default:active {
+	background-color: #3276b1;
+	border-color: #285e8e;
+}
+.dialog-black.ui-dialog+.ui-front{
+	background: rgba(0,0,0,0.3);
+}

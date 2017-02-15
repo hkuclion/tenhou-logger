@@ -1,4 +1,4 @@
-define(['jquery','hkuc/template','data/templates','shared/manager/Setting'],function($,Template,templates, Setting){
+define(['jquery','lib/hkuc/template','template/mainWindow','model/Setting'],function($,Template,templates, Setting){
 	Template.compile('side_toggle',templates.side_toggle);
 
 	class Side{

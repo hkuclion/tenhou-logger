@@ -1,4 +1,4 @@
-define(['jquery','artDialog/black','./dialog_util'],function($,artDialog, HKUC_DIALOG_UTIL){
+define(['lib/jquery','./dialog_util','lib/jqueryui'],function($, HKUC_DIALOG_UTIL){
 	let stopCancel = () => false;
 	let noOperation = () => true;
 	let defaults = {

@@ -1,4 +1,4 @@
-define(['jquery','model/Side','model/Content'],function ($,Side,Content) {
+define(['jquery','model/mainWindow/Side','model/mainWindow/Content'],function ($,Side,Content) {
 	return class Controller {
 		constructor() {
 			this.createView();
