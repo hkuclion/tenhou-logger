@@ -6,15 +6,16 @@ input[type=text],
 input[type=password]{ font: menu; font-size:16px; }
 
 #controller{ margin:1rem; display: flex; flex:1; }
-#content{ flex:3; height: 100%; background: white; overflow: auto; }
-#side{ flex:1; height: 100%; background: white; margin-left: 2rem; position: relative; }
+#content{ flex:1; height: 100%; background: white; overflow: auto; }
+#side{ width:16em; height: 100%; background: white; margin-left: 2rem; position: relative; }
 
 #side_toggle{ font-size: 1.5rem; line-height:1em; position: absolute; top:0; left:-1.75rem; color: white; opacity: 0.7; cursor: pointer; border-radius: 0.1rem; }
 #side_toggle:hover{ opacity: 1; }
 #side_toggle > i{ display: inline-block; }
 #side_toggle > i:first-child{ display: none; }
-#side.closed{ flex:0; margin-left: 1rem; }
-#side.closed #side_toggle{ left:-0.5em; }
+#side.closed{ width: 0; margin-left: 1rem; }
+#side.closed>*{ width:0; height: 0; overflow: hidden; }
+#side.closed #side_toggle{ left:-0.5em; width:auto; height:auto; }
 #side.closed #side_toggle > i{ display: none; }
 #side.closed #side_toggle > i:first-child{ display: inline-block; }
 
@@ -36,5 +37,6 @@ input[type=password]{ font: menu; font-size:16px; }
 #paifu_list ul li .type,
 #paifu_list ul li .user{ white-space: nowrap; word-break: keep-all; }
 
-
-
+.button { line-height: 1.25; padding: 0 0.5em; -webkit-appearance: button; -moz-appearance: button; appearance: button; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+#login::after{content:'登录';}
+#register::after { content: '注册'; }

@@ -1,4 +1,4 @@
-const {BrowserWindow, dialog, app} = require('electron');
+const {BrowserWindow, dialog, app, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
 const {frontend_path, backend_path} = require('../utility/app_path');
@@ -16,6 +16,11 @@ module.exports = function () {
 		icon:path.join(backend_path, 'tenhou.ico'),
 		useContentSize:true,
 		autoHideMenuBar:true,
+		webPreferences:{
+			nodeIntegration:false,
+			plugins:true,
+			preload:path.join(backend_path, path.basename(__dirname), 'contextMenu.js'),
+		}
 	});
 
 	if (tenhouWindowState.maximized) {
@@ -23,12 +28,32 @@ module.exports = function () {
 	}
 
 	window.setMenu(null);
+	
+	window.loadURL('http://tenhou.net/0/',{
+		postData:[{
+			type: 'rawData',
+			bytes: Buffer.from('wb=1')
+		}],
+		extraHeaders: 'Content-Type: application/x-www-form-urlencoded'
+	});
 
-	window.loadURL(url.format({
-		pathname:path.join(frontend_path, path.basename(__dirname) + '.html'),
-		protocol:'file:',
-		slashes:true
-	}));
+	window.webContents.on('dom-ready',(ev)=>{
+		window.webContents.executeJavaScript('document.getElementsByTagName("embed")[0].oncontextmenu=function(){ FlashContextMenu();return false; }');
+	});
+	window.webContents.openDevTools();
+
+	ipcMain.on('FLASH_CONTEXT_MENU',()=>{
+		window.webContents.sendInputEvent({
+			type:'keyDown',
+			keyCode:'Escape'
+		});
+		setTimeout(() => {
+			window.webContents.sendInputEvent({
+				type:'keyUp',
+				keyCode:'Escape'
+			});
+		}, 50);
+	});
 
 	window.on('close', () => {
 		tenhouWindowState.saveState(window);

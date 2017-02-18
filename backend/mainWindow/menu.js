@@ -108,10 +108,21 @@ let menuItem_Option = new MenuItem({
 
 let menuItem_Tenhou = new MenuItem({
 	label:'天凤 (&T)',
-	type:'normal',
-	click:function (item, focusedWindow) {
-		WindowManager.getWindow('tenhou')
-	}
+	type:'submenu',
+	submenu:[
+		{
+			label:'Flash版 (&F)',
+			click:function () {
+				WindowManager.getWindow('tenhouFlash')
+			}
+		},
+		{
+			label:'Web版 (&W)',
+			click:function (item, focusedWindow) {
+				WindowManager.getWindow('tenhouWeb');
+			}
+		}
+	],
 });
 
 mainMenu.append(menuItem_Paifu);

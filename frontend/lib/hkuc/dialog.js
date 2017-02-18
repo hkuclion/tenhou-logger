@@ -7,7 +7,8 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 			},
 			resizable:false,
 			minHeight:120,
-			align:'center'
+			align:'center',
+			autoCenter:true,
 		},
 		alert:{
 			'title':'消息'
@@ -36,7 +37,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 
 		remove($dialog){
 			this.dialogs.delete($dialog);
-			if(!this.dialogs.size()){
+			if(!this.dialogs.size){
 				$(window).off('resize.DialogAutoCenter');
 			}
 		}
@@ -332,7 +333,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 		}
 
 		static get(id){
-			let $div = (id instanceof String)? $('#' + id):$(id);
+			let $div = (typeof id == 'string')? $('#' + id):$(id);
 			return $div.dialog('instance');
 		}
 	}

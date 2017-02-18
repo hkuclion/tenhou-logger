@@ -7,7 +7,10 @@ const WindowStateManager = require('electron-window-state-manager');
 const ElectronSettings = require('electron-settings');
 ElectronSettings.defaults({
 	sidebar_closed:false,
+	login_data:null
 });
+
+require('./SerialCallback');
 
 const mainWindowState = new WindowStateManager(path.basename(__dirname), {
 	defaultWidth:1280,
@@ -48,3 +51,8 @@ module.exports = function(){
 
 	return window;
 };
+
+
+
+
+

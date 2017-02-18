@@ -2,13 +2,23 @@ define(function(){
 	const ElectronSettings = require('electron').remote.require('electron-settings');
 
 	let setting={};
+	let ready_resolve;
+	let readyPromise = new Promise((resolve)=>{
+		ready_resolve = resolve;
+	});
 
 	return class Setting{
 		static initialize(){
 			return ElectronSettings.get().then((value)=>{
+				ready_resolve();
+				ready_resolve = null;
 				Object.assign(setting,value);
 			});
 		}
+		static get ready(){
+			return readyPromise;
+		}
+
 		static get(keyPath){
 			let paths = keyPath.split('.');
 

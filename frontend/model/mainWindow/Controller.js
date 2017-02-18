@@ -1,11 +1,14 @@
-define(['jquery','model/mainWindow/Side','model/mainWindow/Content'],function ($,Side,Content) {
-	return class Controller {
+define(['jquery','model/AsyncReady','model/mainWindow/Side','model/mainWindow/Content'],function ($, AsyncReady,Side,Content) {
+	return class Controller extends AsyncReady{
 		constructor() {
+			super();
 			this.createView();
 			this.createContent();
 			this.createSide();
 
-			this.$view.appendTo('body');
+			this.ready.then(()=>{
+				this.$view.appendTo('body');
+			})
 		}
 
 		createView(){
@@ -14,7 +17,9 @@ define(['jquery','model/mainWindow/Side','model/mainWindow/Content'],function ($
 
 		createSide(){
 			this.side = new Side();
-			this.$view.append(this.side.$view);
+			this.addTask(this.side.ready.then(()=>{
+				this.$view.append(this.side.$view);
+			}));
 		}
 
 		createContent() {

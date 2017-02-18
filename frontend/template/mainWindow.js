@@ -6,9 +6,16 @@ define({
       </a>
 	`,
 	not_logined:`
-		<div class="not_logined">
-			<a id="login">登录</a>
-			<a id="register">注册</a>
+		<div id="user_info">
+			<div class="not_logined">
+				<a id="login" class="button fa fa-user"></a>
+				<a id="register" class="button fa fa-address-card"></a>
+			</div>
+		</div>
+	`,
+	logined:`
+		<div id="user_info">
+			欢迎登录：<a rel='goSite'>{{$user.username}}<span class="arrow"></span></a>，<a id="logout">退出登录</a></li>
 		</div>
 	`,
 	paifu:`
