@@ -2,10 +2,13 @@ const {BrowserWindow, app,dialog} = require('electron');
 const WindowManager = require('./utility/WindowManager');
 
 //flash support
-let ppapi_flash_path = app.getPath('pepperFlashSystemPlugin');
-if (ppapi_flash_path) {
-	app.commandLine.appendSwitch('ppapi-flash-path', ppapi_flash_path);
-}
+let ppapi_flash_path = null;
+try {
+	ppapi_flash_path = app.getPath('pepperFlashSystemPlugin');
+	if (ppapi_flash_path) {
+		app.commandLine.appendSwitch('ppapi-flash-path', ppapi_flash_path);
+	}
+} catch (e) { }
 
 global.alert = (message) => {
 	if(typeof(message) != 'string'){
