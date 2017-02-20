@@ -166,7 +166,7 @@ requirejs(['model/Setting','jquery','lib/hkuc/dialog'], function (Setting,$, HKU
 	}
 
 	function show_paifu_sources(paifu_sources){
-		if(!(paifu_sources instanceof Array))paifu_sources = [];
+		if(!Array.isArray(paifu_sources))paifu_sources = [];
 		$list.empty();
 
 		let index = 0;

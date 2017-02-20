@@ -7,11 +7,11 @@ define(['jquery','model/mainWindow/Content/PaifuList'], function ($,PaifuList) {
 			this.content = null;
 			this.type = null;
 			this.createView();
-			this.bindEvent();
 		}
 
 		createView() {
 			this.$view = $('<article id="content" />');
+			this.bindEvent();
 		}
 
 		bindEvent() {

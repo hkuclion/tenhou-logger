@@ -111,7 +111,7 @@ define(['jquery', 'lib/hkuc/template','template/mainWindow'],function ($, Templa
 			}
 		};
 
-		for (let key in TYPE) {
+		for (let key of Object.keys(TYPE)) {
 			if (is_gino) {
 				if (key == 'taku' || key == 'hanchan')continue;
 			}

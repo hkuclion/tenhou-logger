@@ -7,6 +7,7 @@ define(
 	class UserInfo extends AsyncReady{
 		constructor() {
 			super();
+
 			this.user=undefined;
 
 			this.addTask(SerialCall.call('user').then((user) => {
@@ -15,13 +16,13 @@ define(
 		}
 
 		setUser(user){
-			if(this.user !== user) {
+			if(this.user !== user || !this.$view) {
 				this.user = user;
-				if (this.$view){
-					this.$view.remove();
-				}
+				let $last_view = this.$view;
 				this.createView();
-				this.bindEvent();
+				if($last_view) {
+					$last_view.replaceWith(this.$view);
+				}
 			}
 		}
 
@@ -32,11 +33,29 @@ define(
 			else{
 				this.$view = $(Template.render('not_logined'));
 			}
+			this.bindEvent();
 		}
 
 		bindEvent(){
 			if(this.user){
+				this.$view.find('#logout').on('click',()=>{
+					HKUCDialog.confirm('确认要退出吗？',{id:'UserInfo_logout'},()=>{
+						HKUCDialog.alert('数据提交中，请稍候…', {title:'请等待', id:'SerialCall', persist:true, modal:true});
+						SerialCall.call('logout').then((data) => {
+							HKUCDialog.close('SerialCall');
 
+							if (data.result == 'success') {
+								this.setUser(null);
+								HKUCDialog.close('UserInfo_logout');
+								HKUCDialog.alert(data.message, '成功');
+							}
+							else {
+								HKUCDialog.alert(data.message, '失败');
+							}
+						});
+						return false;
+					});
+				});
 			}
 			else{
 				this.$view.find('#login').on('click',()=>{
@@ -50,13 +69,13 @@ define(
 						data.User.password= RSA.encode(data.User.password);
 
 						HKUCDialog.alert('数据提交中，请稍候…',{title:'请等待',id:'SerialCall',persist:true,modal:true});
-						SerialCall.call('login',data).then(({result, message, data})=>{
+						SerialCall.call('login',data).then((data)=>{
 							HKUCDialog.close('SerialCall');
 
-							this.setUser(data);
-							if(result=='success'){
+							this.setUser(data.data);
+							if(data.result=='success'){
 								HKUCDialog.close('UserInfo_login');
-								HKUCDialog.alert(message, '成功');
+								HKUCDialog.alert(data.message, '成功');
 							}
 							else{
 								HKUCDialog.alert('用户名密码错误，请重试！','错误');

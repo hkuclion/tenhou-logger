@@ -53,6 +53,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 			let bodyWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 			let bodyHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 			for(let $dialog of this.dialogs){
+				if(!$dialog.dialog('instance'))continue;
 				let $widget=$dialog.dialog('widget');
 				$widget.css({
 					'left':Math.max(0,(bodyWidth- $widget.width())/2),
@@ -172,7 +173,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 				options = {title:options};
 			}
 
-			if (message instanceof Array) {
+			if (Array.isArray(message)) {
 				let newForm = '<form class="hkuc_dialog_form"><table>';
 				let identifier = 'hkuc_dialog_form' + window.setTimeout(() => {
 					}) + '_';
@@ -180,7 +181,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 				let form_item_began=false;
 
 				for (let field_info of message) {
-					if(field_info instanceof String){
+					if(typeof field_info == 'string'){
 						field_html+=field_info;
 						continue;
 					}

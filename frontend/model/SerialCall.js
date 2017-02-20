@@ -3,8 +3,8 @@ define(function () {
 	let serial = 0;
 	let stack = new Map();
 
-	ipcRenderer.on('SERIAL_CALL',(ev,serial,data)=>{
-		SerialCall.callback(serial,data);
+	ipcRenderer.on('SERIAL_CALL',(ev,serial,...args)=>{
+		SerialCall.callback(serial, ...args);
 	});
 
 	class SerialCall{
@@ -22,11 +22,16 @@ define(function () {
 			});
 		}
 
-		static callback(serial,data){
+		static callback(serial,result,...args){
 			let info = stack.get(serial);
 			if(!info)return;
+			if(result == 'success') {
+				info.resolve(...args);
+			}
+			else{
+				info.reject(...args);
+			}
 
-			info.resolve(data);
 			stack.delete(serial);
 		}
 	}

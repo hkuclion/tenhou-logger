@@ -44,10 +44,6 @@ define(function(){
 			}
 			object[keys.shift()] = value;
 
-			ElectronSettings.get().then((value) => {
-				console.log(setting);
-			})
-
 			return ElectronSettings.set(keyPath, value);
 		}
 	}

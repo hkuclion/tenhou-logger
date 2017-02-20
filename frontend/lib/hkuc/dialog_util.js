@@ -43,7 +43,7 @@ define(function () {
 		}
 
 		static normalize(current) {
-			for (let key in current) {
+			for (let key of Object.keys(current)) {
 				if (current[key] instanceof Object) {
 					current[key] = this.normalize(current[key]);
 				}

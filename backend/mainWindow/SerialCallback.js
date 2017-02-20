@@ -1,9 +1,6 @@
-const {ipcMain, net} = require('electron');
+const {ipcMain} = require('electron');
+const Ajax = require('../utility/Ajax');
 const ElectronSettings = require('electron-settings');
-let user=null;
-ElectronSettings.get('user_data').then((user_data)=>{
-	user = user_data;
-});
 
 //http://blog.csdn.net/shawyeok/article/details/41749045
 let urlEncode = function (param, key, encode) {
@@ -25,43 +22,44 @@ let urlEncode = function (param, key, encode) {
 ipcMain.on('SERIAL_CALL', (ev, serial, type, data) => {
 	switch (type) {
 		case 'user': {
-			ev.sender.send('SERIAL_CALL', serial, user);
+			ElectronSettings.get('user_data').then((user_data) => {
+				ev.sender.send('SERIAL_CALL', serial,'success', user_data);
+			},(error)=>{
+				ev.sender.send('SERIAL_CALL', serial, 'error', error);
+			});
 			break;
 		}
 		case 'login':{
-			const request = new net.ClientRequest({
+			let ajax = new Ajax({
+				url:'http://local.hkuclion.com/User/ajax_login',
 				method:'POST',
-				protocol:'http:',
-				hostname:'hkuclion.com',
-				port:80,
-				path:'/User/ajax_login',
-				partition:'persist://tenhou-logger'
+				//data:`User%5Busername%5D=${encodeURIComponent(data.User.username)}&User%5Bpassword%5D=${encodeURIComponent(data.User.password)}`//data,
+				data
 			});
-			request.setHeader('Content-Type','application/x-www-form-urlencoded');
 
-			request.end(urlEncode(data));
-			request.on('response', (response) => {
-				response.on('close',()=>{
-					let responseText = '';
-					for(let chunk of response.data){
-						if(!chunk)continue;
-						responseText+= chunk.toString();
-					}
-
-					let response_data = responseText;
-					try{
-						response_data = JSON.parse(response_data);
-						if (response_data.result == 'success') {
-							user = response_data.data;
-							ElectronSettings.set('login_data',data).then(()=>{
-								ElectronSettings.setSync('user_data', user);
-							});
-						}
-					}
-					catch (e){}
-					ev.sender.send('SERIAL_CALL', serial, response_data);
-				})
+			ajax.then((data)=>{
+				ElectronSettings.set('user_data', data.data).then(()=>{
+					ev.sender.send('SERIAL_CALL', serial, 'success', data);
+				});
+			},(error)=>{
+				ev.sender.send('SERIAL_CALL', serial, 'error', error);
 			});
+			break;
+		}
+		case 'logout':{
+			let ajax = new Ajax({
+				url:'http://local.hkuclion.com/User/ajax_logout',
+				method:'GET',
+			});
+
+			ajax.then((data) => {
+				ElectronSettings.set('user_data', data.data).then(()=>{
+					ev.sender.send('SERIAL_CALL', serial, 'success', data);
+				});
+			}, (error) => {
+				ev.sender.send('SERIAL_CALL', serial, 'error', error);
+			});
+			break;
 		}
 	}
 });

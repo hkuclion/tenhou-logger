@@ -10,13 +10,13 @@ define(['jquery','model/mainWindow/Content/Paifu','jqueryui'],function ($,Paifu)
 			this.contextmenu = null;
 			this.contextmenu_items = {};
 			this.createView();
-			this.bindEvent();
 			this.buildContextMenu();
 		}
 
 		createView() {
 			this.$view = $('<div id="paifu_list"></div>');
 			this.$list = $('<ul/>').appendTo(this.$view);
+			this.bindEvent();
 		}
 
 		bindEvent(){
