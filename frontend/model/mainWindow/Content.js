@@ -15,8 +15,8 @@ define(['jquery','model/mainWindow/Content/PaifuList'], function ($,PaifuList) {
 		}
 
 		bindEvent() {
-			ipcRenderer.on('SHOW_PAIFU_LOCAL', (event, logstr) => {
-				this.showPaifuList(logstr,true);
+			ipcRenderer.on('SHOW_PAIFU_LOCAL', (event, paifu_strings) => {
+				this.showPaifuList(paifu_strings,true);
 			})
 		}
 
@@ -24,12 +24,12 @@ define(['jquery','model/mainWindow/Content/PaifuList'], function ($,PaifuList) {
 			if(this.type)this[this.type].destructor();
 		}
 
-		showPaifuList(logstr,is_local){
+		showPaifuList(paifu_strings,is_local){
 			this.removeContent();
 			this.type = 'paifu_list';
 			this.createPaifuList();
 			this.paifu_list.setPaifu(
-				logstr.split('\n').filter((value) => value.length),
+				paifu_strings.filter((value) => value.length),
 				is_local
 			)
 		}

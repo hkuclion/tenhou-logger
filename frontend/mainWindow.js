@@ -1,4 +1,3 @@
-requirejs(['model/Setting', 'model/mainWindow/Controller'], function (Setting, Controller) {
-	Setting.initialize();
+requirejs(['model/mainWindow/Controller'], function (Controller) {
 	new Controller();
 });

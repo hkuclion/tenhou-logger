@@ -2,7 +2,6 @@ const {app, Menu, MenuItem,dialog} = require('electron');
 const WindowManager=require('../utility/WindowManager');
 const Operation = require('./Operation');
 
-
 let mainMenu = new Menu();
 let menuItem_Paifu = new MenuItem({
 	label:'牌谱',
@@ -31,9 +30,8 @@ let menuItem_Paifu = new MenuItem({
 		{
 			label:'查看本地',
 			click:function() {
-				let local_sol = Operation.get_local_sol();
-
-				if (!local_sol) {
+				let local_paifu_strings = Operation.get_local_paifu();
+				if (!local_paifu_strings) {
 					dialog.showMessageBox({
 						type:'info',
 						message:'获取本地牌谱失败',
@@ -43,7 +41,7 @@ let menuItem_Paifu = new MenuItem({
 
 				WindowManager.getWindow('main').webContents.send(
 					'SHOW_PAIFU_LOCAL',
-					local_sol.data.logstr
+					local_paifu_strings
 				);
 			},
 			accelerator:'Ctrl+R'
@@ -94,8 +92,8 @@ let menuItem_Option = new MenuItem({
 		{
 			label:'清除配置',
 			click:function(){
-
-			}//actions.clearSetting
+				require('electron-json-config').purge();
+			}
 		},
 		{
 			label:'牌谱来源配置',

@@ -3,34 +3,28 @@ const path = require('path');
 const url = require('url');
 const {frontend_path, backend_path} = require('./../utility/app_path');
 
-const WindowStateManager = require('electron-window-state-manager');
-const ElectronSettings = require('electron-settings');
-ElectronSettings.defaults({
-	sidebar_closed:false,
-	login_data:null
-});
+const windowStateKeeper = require('electron-window-state');
 
 require('./SerialCallback');
 
-const mainWindowState = new WindowStateManager(path.basename(__dirname), {
+let windowState = windowStateKeeper({
 	defaultWidth:1280,
-	defaultHeight:720
+	defaultHeight:720,
+	file:'window_'+ path.basename(__dirname)+'.json'
 });
 
 module.exports = function(){
 	let window = new BrowserWindow({
-		x:mainWindowState.x,
-		y:mainWindowState.y,
-		width:mainWindowState.width,
-		height:mainWindowState.height,
+		x:windowState.x,
+		y:windowState.y,
+		width:windowState.width,
+		height:windowState.height,
 		icon:path.join(backend_path, 'lion.png'),
 		backgroundColor:'#55a9f1',
 		show:false,
 	});
 
-	if (mainWindowState.maximized) {
-		window.maximize();
-	}
+	windowState.manage(window);
 
 	require('./menu')(window);
 
@@ -39,10 +33,6 @@ module.exports = function(){
 		protocol:'file:',
 		slashes:true
 	}));
-
-	window.on('close', () => {
-		mainWindowState.saveState(window);
-	});
 
 	window.on('ready-to-show', () => {
 		window.show();

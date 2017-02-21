@@ -1,6 +1,6 @@
 {
   "name": "tenhou-logger",
-  "productName":"TenhouLogger",
+  "productName": "TenhouLogger",
   "version": "1.0.0",
   "description": "TenhouLogger",
   "main": "backend/main.js",
@@ -14,8 +14,9 @@
   ],
   "author": "hkuclion <hkuclion@qq.com> (http://hkuclion.com)",
   "dependencies": {
-    "electron-settings": "^2.2.2",
-    "electron-window-state-manager": "^0.3.0"
+    "electron-json-config": "^1.4.0",
+    "electron-window-state": "^4.0.2",
+    "qs": "^6.3.1"
   },
   "os": [
     "win32"

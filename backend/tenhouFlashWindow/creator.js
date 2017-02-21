@@ -4,13 +4,17 @@ const url = require('url');
 const {frontend_path, backend_path} = require('../utility/app_path');
 const {getTenhouMjstatus} = require('../utility/tenhou_path');
 
-const WindowStateManager = require('electron-window-state-manager');
-const tenhouWindowState = new WindowStateManager(path.basename(__dirname),{});
+const windowStateKeeper = require('electron-window-state');
+let windowState = windowStateKeeper({
+	defaultWidth:728,
+	defaultHeight:620,
+	file:'window_' + path.basename(__dirname) + '.json'
+});
 
 module.exports = function () {
 	let window = new BrowserWindow({
-		x:tenhouWindowState.x,
-		y:tenhouWindowState.y,
+		x:windowState.x,
+		y:windowState.y,
 		width:728,
 		height:620,
 		icon:path.join(backend_path, 'tenhou.ico'),
@@ -22,10 +26,7 @@ module.exports = function () {
 			preload:path.join(backend_path, path.basename(__dirname), 'contextMenu.js'),
 		}
 	});
-
-	if (tenhouWindowState.maximized) {
-		window.maximize();
-	}
+	windowState.manage(window);
 
 	window.setMenu(null);
 	
@@ -53,10 +54,6 @@ module.exports = function () {
 				keyCode:'Escape'
 			});
 		}, 50);
-	});
-
-	window.on('close', () => {
-		tenhouWindowState.saveState(window);
 	});
 
 	window.on('close',(ev)=>{

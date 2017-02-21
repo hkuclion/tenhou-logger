@@ -1,43 +1,6 @@
 const {net:Net} = require('electron');
-
+const QS = require('qs');
 const Url = require('url');
-
-//http://stackoverflow.com/questions/1714786/querystring-encoding-of-a-javascript-object/1714899#1714899
-let param = function (a) {
-	let s = [], rbracket = /\[\]$/,
-		add = function (k, v) {
-			v = typeof v === 'function' ? v() : v === null ? '' : v === undefined ? '' : v;
-			s[s.length] = encodeURIComponent(k) + '=' + encodeURIComponent(v);
-		}, buildParams = function (prefix, obj) {
-			let len;
-
-			if (prefix) {
-				if (Array.isArray(obj)) {
-					for (let i = 0, len = obj.length; i < len; i++) {
-						if (rbracket.test(prefix)) {
-							add(prefix, obj[i]);
-						} else {
-							buildParams(prefix + '[' + (typeof obj[i] === 'object' ? i : '') + ']', obj[i]);
-						}
-					}
-				} else if (obj && String(obj) === '[object Object]') {
-					for (let key of Object.keys(obj)) {
-						buildParams(prefix + '[' + key + ']', obj[key]);
-					}
-				} else {
-					add(prefix, obj);
-				}
-			} else {
-				for (let key of Object.keys(obj)) {
-					buildParams(key, obj[key]);
-				}
-			}
-			return s;
-		};
-
-	return buildParams('', a).join('&').replace(/%20/g, '+');
-};
-
 
 let default_options = {
 	url:undefined,
@@ -61,7 +24,7 @@ class Ajax{
 		if(data) {
 			this.request.setHeader('Content-Type', this.options.contentType);
 			if (this.options.contentType == default_options.contentType && typeof data != 'string') {
-				data = param(data);
+				data = QS.stringify(data);
 			}
 		}
 		this.request.end(data);
@@ -69,7 +32,6 @@ class Ajax{
 		return new Promise((resolve,reject)=>{
 			this.request.on('response', (response) => {
 				response.on('error', (e) => {
-					alert('error');
 					reject(e);
 				});
 

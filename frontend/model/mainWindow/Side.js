@@ -23,9 +23,7 @@ define(
 				});
 
 				this.$view.append(this.$side_toggle);
-				this.addTask(Setting.ready.then(()=>{
-					this.toggle(Setting.get('sidebar_closed'));
-				}));
+				this.toggle(Setting.get('sidebar_closed'));
 			}
 
 			createUserInfo(){

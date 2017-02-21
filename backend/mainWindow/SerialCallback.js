@@ -1,6 +1,6 @@
 const {ipcMain} = require('electron');
 const Ajax = require('../utility/Ajax');
-const ElectronSettings = require('electron-settings');
+const ElectronConfig = require('electron-json-config');
 
 //http://blog.csdn.net/shawyeok/article/details/41749045
 let urlEncode = function (param, key, encode) {
@@ -22,25 +22,20 @@ let urlEncode = function (param, key, encode) {
 ipcMain.on('SERIAL_CALL', (ev, serial, type, data) => {
 	switch (type) {
 		case 'user': {
-			ElectronSettings.get('user_data').then((user_data) => {
-				ev.sender.send('SERIAL_CALL', serial,'success', user_data);
-			},(error)=>{
-				ev.sender.send('SERIAL_CALL', serial, 'error', error);
-			});
+			ev.sender.send('SERIAL_CALL', serial, 'success', ElectronConfig.get('user_data',null));
 			break;
 		}
 		case 'login':{
 			let ajax = new Ajax({
 				url:'http://local.hkuclion.com/User/ajax_login',
 				method:'POST',
-				//data:`User%5Busername%5D=${encodeURIComponent(data.User.username)}&User%5Bpassword%5D=${encodeURIComponent(data.User.password)}`//data,
 				data
 			});
 
-			ajax.then((data)=>{
-				ElectronSettings.set('user_data', data.data).then(()=>{
-					ev.sender.send('SERIAL_CALL', serial, 'success', data);
-				});
+			ajax.then((response_data)=>{
+				ElectronConfig.set('login_data', data);
+				ElectronConfig.set('user_data', response_data.data);
+				ev.sender.send('SERIAL_CALL', serial, 'success', response_data);
 			},(error)=>{
 				ev.sender.send('SERIAL_CALL', serial, 'error', error);
 			});
@@ -53,9 +48,9 @@ ipcMain.on('SERIAL_CALL', (ev, serial, type, data) => {
 			});
 
 			ajax.then((data) => {
-				ElectronSettings.set('user_data', data.data).then(()=>{
-					ev.sender.send('SERIAL_CALL', serial, 'success', data);
-				});
+				ElectronConfig.delete('login_data');
+				ElectronConfig.set('user_data', data.data);
+				ev.sender.send('SERIAL_CALL', serial, 'success', data);
 			}, (error) => {
 				ev.sender.send('SERIAL_CALL', serial, 'error', error);
 			});

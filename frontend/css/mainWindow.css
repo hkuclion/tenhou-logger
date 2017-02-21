@@ -32,7 +32,7 @@ input[type=password]{ font: menu; font-size:16px; }
 #paifu_list ul li .type { color: #333; width: 8em; }
 #paifu_list ul li .url { color: #36C; }
 #paifu_list ul li .rank { /*width:13em;*/ text-align: right; }
-#paifu_list ul li .ten { color: #ccc; }
+#paifu_list ul li .ten { color: #aaa; }
 #paifu_list ul li .date,
 #paifu_list ul li .type,
 #paifu_list ul li .user{ white-space: nowrap; word-break: keep-all; }

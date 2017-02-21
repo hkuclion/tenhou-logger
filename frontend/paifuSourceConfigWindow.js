@@ -132,17 +132,15 @@ requirejs(['model/Setting','jquery','lib/hkuc/dialog'], function (Setting,$, HKU
 			$(this).toggleClass('selected').siblings().removeClass('selected');
 		});
 
-		Setting.initialize().then(() => {
-			current_paifu_sources = Setting.get('paifu_sources');
-			if (!current_paifu_sources) current_paifu_sources = [];
+		current_paifu_sources = Setting.get('paifu_sources');
+		if (!current_paifu_sources) current_paifu_sources = [];
 
-			default_paifu_source_index = Setting.get('default_paifu_source_index');
-			if(typeof default_paifu_source_index != 'number' ){
-				default_paifu_source_index = -1;
-			}
+		default_paifu_source_index = Setting.get('default_paifu_source_index');
+		if(typeof default_paifu_source_index != 'number' ){
+			default_paifu_source_index = -1;
+		}
 
-			show_paifu_sources(current_paifu_sources);
-		});
+		show_paifu_sources(current_paifu_sources);
 	});
 
 	function show_open_file(options){
@@ -160,9 +158,8 @@ requirejs(['model/Setting','jquery','lib/hkuc/dialog'], function (Setting,$, HKU
 			type,file
 		});
 
-		Setting.set('paifu_sources',current_paifu_sources).then(()=>{
-			show_paifu_sources(current_paifu_sources);
-		});
+		Setting.set('paifu_sources',current_paifu_sources);
+		show_paifu_sources(current_paifu_sources);
 	}
 
 	function show_paifu_sources(paifu_sources){
