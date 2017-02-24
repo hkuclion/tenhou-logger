@@ -39,14 +39,14 @@ define(
 		bindEvent(){
 			if(this.user){
 				this.$view.find('#logout').on('click',()=>{
-					HKUCDialog.confirm('确认要退出吗？',{id:'UserInfo_logout'},()=>{
-						HKUCDialog.alert('数据提交中，请稍候…', {title:'请等待', id:'SerialCall', persist:true, modal:true});
+					let confirm_dialog = HKUCDialog.confirm('确认要退出吗？',{id:'UserInfo_confirm'}).on('dialog_ok', () => {
+						let info_dialog = HKUCDialog.alert('数据提交中，请稍候…', {title:'请等待', persist:true, modal:true});
 						SerialCall.call('logout').then((data) => {
-							HKUCDialog.close('SerialCall');
+							info_dialog.close();
 
 							if (data.result == 'success') {
 								this.setUser(null);
-								HKUCDialog.close('UserInfo_logout');
+								confirm_dialog.close();
 								HKUCDialog.alert(data.message, '成功');
 							}
 							else {
@@ -59,30 +59,30 @@ define(
 			}
 			else{
 				this.$view.find('#login').on('click',()=>{
-					HKUCDialog.form([
+					let form_dialog = HKUCDialog.form([
 						{label:'用户名',name:'User[username]',type:'text'},
 						{label:'密码',name:'User[password]',type:'password'}
 					],{
 						title:'登录',
-						id:'UserInfo_login'
-					},(data)=>{
-						data.User.password= RSA.encode(data.User.password);
+						id:'UserInfo_login',
+					}).on('dialog_ok', (ev,data) => {
+						data.User.password = RSA.encode(data.User.password);
 
-						HKUCDialog.alert('数据提交中，请稍候…',{title:'请等待',id:'SerialCall',persist:true,modal:true});
-						SerialCall.call('login',data).then((data)=>{
-							HKUCDialog.close('SerialCall');
+						let info_dialog = HKUCDialog.alert('数据提交中，请稍候…', {title:'请等待', persist:true, modal:true});
+						SerialCall.call('login', data).then((data) => {
+							info_dialog.close();
 
 							this.setUser(data.data);
-							if(data.result=='success'){
-								HKUCDialog.close('UserInfo_login');
+							if (data.result == 'success') {
+								form_dialog.close();
 								HKUCDialog.alert(data.message, '成功');
 							}
-							else{
-								HKUCDialog.alert('用户名密码错误，请重试！','错误');
+							else {
+								HKUCDialog.alert('用户名密码错误，请重试！', '错误');
 							}
 						});
 						return false;
-					})
+					});
 				});
 			}
 		}

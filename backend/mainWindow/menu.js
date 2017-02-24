@@ -10,22 +10,14 @@ let menuItem_Paifu = new MenuItem({
 		{
 			label:'获取远程',
 			click:function () {
+				let remote_paifu_strings = Operation.get_remote_paifu();
 				dialog.showMessageBox({
 					type:'info',
 					title:'提示',
 					message:'Click'
 				});
 			},
-		},
-		{
-			label:'上传远程',
-			click:function () {
-				dialog.showMessageBox({
-					type:'info',
-					title:'提示',
-					message:'Click'
-				});
-			},
+			accelerator:'Ctrl+R'
 		},
 		{
 			label:'查看本地',
@@ -44,7 +36,7 @@ let menuItem_Paifu = new MenuItem({
 					local_paifu_strings
 				);
 			},
-			accelerator:'Ctrl+R'
+			accelerator:'Ctrl+L'
 		},
 	],
 });

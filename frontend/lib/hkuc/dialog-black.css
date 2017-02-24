@@ -86,7 +86,7 @@
 	box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
-.dialog-black.ui-dialog .ui-dialog-buttonpane button.ui-dialog-default{
+.dialog-black.ui-dialog .ui-dialog-buttonpane button[autofocus]{
 	background: linear-gradient(
 		to bottom,
 		#33bbee 0%,
@@ -94,7 +94,7 @@
 	);
 	border: 1px solid #357ebd;
 }
-.dialog-black.ui-dialog .ui-dialog-buttonpane button.ui-dialog-default:active {
+.dialog-black.ui-dialog .ui-dialog-buttonpane button[autofocus]:active {
 	background-color: #3276b1;
 	border-color: #285e8e;
 }

@@ -29,6 +29,11 @@ define(function () {
 				info.resolve(...args);
 			}
 			else{
+				if(result === 'error'){
+					let error = new window[args[0].name](args[0].description || args[0].message);
+					Object.assign(error,args[0]);
+					args[0] = error;
+				}
 				info.reject(...args);
 			}
 

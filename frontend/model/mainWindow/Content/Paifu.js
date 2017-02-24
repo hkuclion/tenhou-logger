@@ -17,7 +17,10 @@ define(['jquery', 'lib/hkuc/template','template/mainWindow'],function ($, Templa
 			}
 		}
 
-		toString(){
+		toString(type='text'){
+			if(type == 'logstr') {
+				return this.data.log_str;
+			}
 			return Template.render('paifu_text', {$paifu:this.data});
 		}
 

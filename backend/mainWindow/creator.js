@@ -39,6 +39,12 @@ module.exports = function(){
 		window.focus();
 	});
 
+	window.webContents.executeJavaScript(`
+      require('electron').ipcRenderer.on('console.log',(ev,...args)=>{
+		console.log(...args);
+	  });
+    `);
+
 	return window;
 };
 

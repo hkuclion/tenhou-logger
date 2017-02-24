@@ -65,18 +65,68 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 
 	let dialog_auto_center = new DialogAutoCenter();
 
-
 	return class HKUC_DIALOG {
+		constructor(options){
+			this.$view = HKUC_DIALOG.create(options);
+			this.instance = this.$view.dialog('instance');
+			this.$view.data('this',this);
+
+			this.$view.parent().on('dialog_ok',()=>{
+				this.close();
+				return false;
+			}).on('dialog_cancel', (...args) => {
+				this.close();
+				return false;
+			});
+		}
+		on(eventName,callback){
+			this.$view.on(eventName,(...args)=>{
+				return callback.call(this,...args);
+			});
+			return this;
+		}
+		off(...args){
+			this.$view.off(...args);
+			return this;
+		}
+
+		close(){
+			this.instance.destroy();
+			this.$view.parent().off('dialog_ok,dialog_cancel');
+			this.$view.off().remove();
+		}
+		show(){
+			this.instance.show();
+		}
+		hide(){
+			this.instance.hide();
+		}
+		option(name,...values){
+			switch(name){
+				case 'content':
+					if(values.length){
+						this.$view.html(values[0]);
+					}
+					else{
+						return this.$view.html();
+					}
+					break;
+				default:
+					this.$view.dialog('option',name,...values);
+					break;
+			}
+		}
+
 		static alert(message, options = {}) {
 			if (typeof options == 'string') {
 				options = {title:options};
 			}
 
 			options = $.extend(true,{content:message}, defaults.alert, defaults.all, options);
-			return this.create(options);
+			return new HKUC_DIALOG(options);
 		}
 
-		static confirm(message, options = {}, okCallback = noOperation, cancelCallback = noOperation) {
+		static confirm(message, options = {}) {
 			if (typeof(options) == 'string') {
 				options = {title:options};
 			}
@@ -86,25 +136,21 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 				buttons:[
 					{
 						'text':'确定',
-						'class':'ui-dialog-default',
+						'autofocus':true,
 						'click':function(){
-							if(okCallback.call(this)!==false){
-								HKUC_DIALOG.close(this);
-							}
+							$(this).trigger('dialog_ok');
 						},
 					},
 					{
 						'text':'取消',
 						'click':function () {
-							if (cancelCallback.call(this) !== false) {
-								HKUC_DIALOG.close(this);
-							}
+							$(this).trigger('dialog_cancel');
 						},
 					},
 				],
 			}, defaults.confirm, defaults.all, options);
 
-			return this.create(options);
+			return new HKUC_DIALOG(options);
 		}
 
 		static prompt(message, options = {}, okCallback = noOperation, cancelCallback = noOperation) {
@@ -121,33 +167,29 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 				buttons:[
 					{
 						'text':'确定',
-						'class':'ui-dialog-default',
+						'autofocus':true,
 						'click':function () {
 							let form_data = HKUC_DIALOG_UTIL.parseSerializeArray($(this).find('form').serializeArray());
-							if (okCallback.call(this, form_data.prompt.value) !== false) {
-								HKUC_DIALOG.close(this);
-							}
+							$(this).trigger('dialog_ok', form_data.prompt.value);
 						},
 					},
 					{
 						'text':'取消',
 						'click':function () {
-							if (cancelCallback.call(this) !== false) {
-								HKUC_DIALOG.close(this);
-							}
+							$(this).trigger('dialog_cancel');
 						},
 					},
 				],
 			}, defaults.prompt, defaults.all, options);
 
-			let $div = this.create(options);
+			let dialog = new HKUC_DIALOG(options);
 
-			$div.find('form').on('submit', () => {
-				$div.dialog('widget').find('.ui-dialog-default').trigger('click');
+			dialog.$view.find('form').on('submit', function() {
+				$(this).closest('.hkuc_dialog').dialog('widget').find('.ui-dialog-default').trigger('click');
 				return false;
 			});
 
-			return $div;
+			return dialog;
 		}
 
 		/*
@@ -263,35 +305,32 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 				buttons:[
 					{
 						'text':'确定',
-						'class':'ui-dialog-default',
+						'autofocus':true,
 						'click':function () {
 							let form_data = HKUC_DIALOG_UTIL.parseSerializeArray($(this).find('form').serializeArray());
-							if (okCallback.call(this, form_data) !== false) {
-								HKUC_DIALOG.close(this);
-							}
+							$(this).trigger('dialog_ok', form_data);
 						},
 					},
 					{
 						'text':'取消',
 						'click':function () {
 							if (cancelCallback.call(this) !== false) {
-								HKUC_DIALOG.close(this);
+								$(this).trigger('dialog_cancel');
 							}
 						},
 					},
 				],
 			}, defaults.form, defaults.all, options);
 
-			let $div = this.create(options);
+			let dialog = new HKUC_DIALOG(options);
 
-			$div.find('form').on('submit', () => {
-				$div.dialog('widget').find('.ui-dialog-default').trigger('click');
+			dialog.$view.find('form').on('submit', function () {
+				$(this).closest('.hkuc_dialog').dialog('widget').find('.ui-dialog-default').trigger('click');
 				return false;
 			});
 
-			return $div;
+			return dialog;
 		}
-
 
 		static create(options){
 			let $div = $('<div class="hkuc_dialog"/>').append(options.content);
@@ -301,7 +340,11 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 				options.closeOnEscape=false;
 			}
 			$div.css('min-width',120);
-			if(options.id)$div.attr('id',options.id);
+			if(options.id) {
+				$div.attr('id', options.id);
+				let existing_dialog = HKUC_DIALOG.get(options.id);
+				if(existing_dialog)existing_dialog.close();
+			}
 			$div.dialog(options);
 
 			$div.dialog('option','width','auto');
@@ -312,30 +355,8 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 			return $div;
 		}
 
-		static close(id){
-			let instance = this.get(id);
-			if(!instance)return;
-
-			instance.destroy();
-		}
-
-		static hide(id){
-			let instance = this.get(id);
-			if (!instance)return;
-
-			instance.close();
-		}
-
-		static show(id){
-			let instance = this.get(id);
-			if (!instance)return;
-
-			instance.open();
-		}
-
 		static get(id){
-			let $div = (typeof id == 'string')? $('#' + id):$(id);
-			return $div.dialog('instance');
+			return $('#'+id).data('this');
 		}
 	}
 });
