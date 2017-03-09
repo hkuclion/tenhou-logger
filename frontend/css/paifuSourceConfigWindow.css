@@ -4,8 +4,8 @@ ul.list { margin: 0; list-style: none; padding: 0; }
 #source_list li { line-height: 1.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #source_list li::before { background: lightcoral; color: #fff; padding: 0 3px; border-radius: 0.2em; margin: 0 0.5em 0 0.2em; text-align: center }
 #source_list li.default::before{ background: darkgreen; }
-#source_list li[data-type=flash]::before,
-#source_list li[data-type=local]::before{ content: "flash"; }
+#source_list li[data-type=flash]::before { content: "flash"; }
+#source_list li[data-type=local]::before{ content: "local"; }
 #source_list li[data-type=win]::before { content: "\00a0win\00a0"; }
 #source_list li:nth-child(2n+1) { background: #e6e6e6 }
 #source_list li:nth-child(2n) { background: #f3f3f3; }

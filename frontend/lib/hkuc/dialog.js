@@ -1,5 +1,4 @@
 define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($, HKUC_DIALOG_UTIL){
-	let noOperation = ()=>true;
 	let defaults = {
 		all:{
 			'classes':{
@@ -153,7 +152,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 			return new HKUC_DIALOG(options);
 		}
 
-		static prompt(message, options = {}, okCallback = noOperation, cancelCallback = noOperation) {
+		static prompt(message, options = {}) {
 			if (typeof(options) == 'string') {
 				options = {title:options};
 			}
@@ -204,13 +203,9 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 		 },
 		 {name:'data[User][remember]', type:'checker', label:'记住密码', value:'1'},
 		 {name:'data[User][content]', type:'textarea', label:'附加信息', value:'a<textarea>b</textarea>c'},
-		 ], '登录', (value) => {
-		 console.log('确认', value);
-		 }, () => {
-		 console.log('取消');
-		 });
+		 ], '登录').on('dialog_ok',(ev,value)=>{console.log(value)});
 		 */
-		static form(message, options = {}, okCallback = noOperation, cancelCallback = noOperation) {
+		static form(message, options = {}) {
 			if (typeof(options) == 'string') {
 				options = {title:options};
 			}
@@ -265,6 +260,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 							let default_value = 'value' in field_info && field_info.value ? 'checked="checked"' : '';
 							field_html += `<input type="hidden" ${field_info.disabled ? ' disabled' : ''} ${field_info.readonly ? ' readonly' : ''} name="${field_info.name}" value="" />`;
 							field_html += `<input type="checkbox" ${field_info.disabled ? ' disabled' : ''} ${field_info.readonly ? ' readonly' : ''} name="${field_info.name}" value="1" ${default_value} />`;
+							break;
 						}
 						case 'select': {
 							if (!field_info.options) {
@@ -314,9 +310,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 					{
 						'text':'取消',
 						'click':function () {
-							if (cancelCallback.call(this) !== false) {
-								$(this).trigger('dialog_cancel');
-							}
+							$(this).trigger('dialog_cancel');
 						},
 					},
 				],

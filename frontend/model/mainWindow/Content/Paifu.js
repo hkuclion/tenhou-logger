@@ -4,9 +4,15 @@ define(['jquery', 'lib/hkuc/template','template/mainWindow'],function ($, Templa
 	Template.compile('paifu', templates.paifu);
 
 	class Paifu{
-		constructor(log_str,is_local){
-			this.data = parseLogStr(log_str);
-			this.is_local = is_local;
+		constructor(log_str){
+			if(typeof log_str == 'string'){
+				this.is_local = true;
+				this.data = parseLogStr(log_str);
+			}
+			else{
+				this.is_local = false;
+				this.data = extractLogObject(log_str);
+			}
 
 			this.createView();
 		}
@@ -67,6 +73,16 @@ define(['jquery', 'lib/hkuc/template','template/mainWindow'],function ($, Templa
 
 		ret['date'] = [params['file'].substr(0, 4), params['file'].substr(4, 2), params['file'].substr(6, 2)].join('-');
 		ret['lobby'] = parseInt(params['file'].substr(18, 4), 10);
+
+		return ret;
+	}
+
+	function extractLogObject(log_obj){
+		let ret = {};
+
+		for(let key of ['log_str','oya','type','sc','yet','rank','url','un','date','lobby']){
+			ret[key] = log_obj.Tlog[key];
+		}
 
 		return ret;
 	}

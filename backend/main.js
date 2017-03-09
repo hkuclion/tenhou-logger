@@ -16,6 +16,11 @@ global.alert = (message) => {
 	}
 	dialog.showMessageBox({title:'alert',detail:message});
 };
+global.remote_console=(...args)=>{
+	WindowManager.getWindow('main').webContents.send(
+		'console.log',...args
+	);
+};
 
 app.on('ready', () => {
 	let mainWindow;

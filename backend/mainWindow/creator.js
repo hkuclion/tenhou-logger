@@ -5,8 +5,6 @@ const {frontend_path, backend_path} = require('./../utility/app_path');
 
 const windowStateKeeper = require('electron-window-state');
 
-require('./SerialCallback');
-
 let windowState = windowStateKeeper({
 	defaultWidth:1280,
 	defaultHeight:720,

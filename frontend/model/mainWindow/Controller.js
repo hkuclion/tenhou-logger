@@ -1,4 +1,6 @@
-define(['jquery','model/AsyncReady','model/mainWindow/Side','model/mainWindow/Content'],function ($, AsyncReady,Side,Content) {
+define(['jquery','model/AsyncReady','model/mainWindow/Side','model/mainWindow/Content', 'lib/hkuc/dialog'],function ($, AsyncReady,Side,Content,HKUC) {
+	let ipcRenderer = require('electron').ipcRenderer;
+
 	return class Controller extends AsyncReady{
 		constructor() {
 			super();
@@ -13,6 +15,16 @@ define(['jquery','model/AsyncReady','model/mainWindow/Side','model/mainWindow/Co
 
 		createView(){
 			this.$view = $('<div id="controller" />');
+			this.bindEvent();
+		}
+
+		bindEvent() {
+			ipcRenderer.on('SHOW_MESSAGE', (event, message) => {
+				HKUC.dialog.alert({
+					id:'show_message',
+					content:message,
+				})
+			});
 		}
 
 		createSide(){

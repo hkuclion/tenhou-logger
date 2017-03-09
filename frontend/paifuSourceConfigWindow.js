@@ -131,6 +131,12 @@ requirejs(['model/Setting','jquery','lib/hkuc/dialog'], function (Setting,$, HKU
 		$list.on('click','li',function(){
 			$(this).toggleClass('selected').siblings().removeClass('selected');
 		});
+		$list.on('dblclick', 'li', function () {
+			let index = $(this).index();
+			default_paifu_source_index = index;
+			Setting.set('default_paifu_source_index', index);
+			show_paifu_sources(current_paifu_sources);
+		});
 
 		current_paifu_sources = Setting.get('paifu_sources');
 		if (!current_paifu_sources) current_paifu_sources = [];

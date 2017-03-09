@@ -1,4 +1,4 @@
-define(['jquery','model/mainWindow/Content/Paifu','model/SerialCall','lib/hkuc/dialog'],function ($,Paifu,SerialCall,HKUCDialog) {
+define(['jquery','model/mainWindow/Content/Paifu','model/Setting','model/SerialCall','lib/hkuc/dialog','lib/layPage/laypage'],function ($,Paifu,Setting,SerialCall,HKUCDialog,layPage) {
 	let electron = require('electron');
 	let {Menu}=electron.remote;
 	let clipboard = electron.clipboard;
@@ -6,6 +6,9 @@ define(['jquery','model/mainWindow/Content/Paifu','model/SerialCall','lib/hkuc/d
 	class PaifuList {
 		constructor() {
 			this.paifus = [];
+			this.page = 1;
+			this.search = {};
+
 			this.is_local=true;
 			this.contextmenu = null;
 			this.contextmenu_items = {};
@@ -16,6 +19,7 @@ define(['jquery','model/mainWindow/Content/Paifu','model/SerialCall','lib/hkuc/d
 		createView() {
 			this.$view = $('<div id="paifu_list"></div>');
 			this.$list = $('<ul/>').appendTo(this.$view);
+			this.$page = $('<div/>').appendTo(this.$view);
 
 			this.bindEvent();
 		}
@@ -88,15 +92,34 @@ define(['jquery','model/mainWindow/Content/Paifu','model/SerialCall','lib/hkuc/d
 			}
 		}
 
-		setPaifu(paifu_strings,is_local){
+		setPaifu(paifu_strings,page,search){
 			this.paifus = [];
-			this.is_local = is_local;
 			this.$list.empty();
 
 			for(let paifu_string of paifu_strings){
-				let paifu = new Paifu(paifu_string, is_local);
+				let paifu = new Paifu(paifu_string);
 				this.paifus.push(paifu);
 				this.$list.append(paifu.$view);
+			}
+
+			if(page){
+				layPage.dir = './lib/layPage/laypage.css';
+				layPage({
+					cont:this.$page,
+					pages:page.Tlog.pageCount,
+					curr:page.Tlog.page,
+					first:'首页',
+					last:'尾页',
+					jump:async (page_info,first)=>{
+						if(!first){
+							this.page = page_info.curr;
+							this.getRemote();
+						}
+					}
+				})
+			}
+			else{
+				this.$page.empty();
 			}
 		}
 
@@ -183,7 +206,7 @@ define(['jquery','model/mainWindow/Content/Paifu','model/SerialCall','lib/hkuc/d
 				if(recent_results.length>5)recent_results.shift();
 				info_dialog.option('content', '牌谱上传中，请稍候<br />' + recent_results.join('<br />'));
 				let result = await SerialCall.call('ajax', {
-					url:'http://local.hkuclion.com/Tlog/ajax_set.html',
+					url:`${Setting.get('server')}/Tlog/ajax_set.html`,
 					method:'POST',
 					data:{logstr:btoa(logstrs[i])},
 				});
@@ -194,14 +217,36 @@ define(['jquery','model/mainWindow/Content/Paifu','model/SerialCall','lib/hkuc/d
 					last_result += '成功';
 				}
 				else{
-					last_result += '失败';
+					last_result += `失败:${result.data}`;
 				}
 				recent_results.push(last_result);
 				info_dialog.option('content', '牌谱上传中，请稍候<br />'+ recent_results.join('<br />'));
 			}
 
-			info_dialog.close();
-			HKUCDialog.alert(`牌谱上传完毕，成功上传了${success_count}/${logstrs.length}条牌谱`);
+			HKUCDialog.alert(`牌谱上传完毕，成功上传了${success_count}/${logstrs.length}条牌谱`).on('close',()=>{
+				info_dialog.close();
+			});
+		}
+
+		async getRemote(){
+			let dialog = HKUCDialog.alert('获取远程数据中……');
+
+			let result = await SerialCall.call('ajax',{
+				url:`${Setting.get('server')}/Tlog/ajax_get`,
+				method:'POST',
+				data:Object.assign(
+					{page:this.page},this.search
+				)
+			});
+
+			dialog.close();
+
+			if (result.result == 'success') {
+				this.setPaifu(result.data.list,result.data.page,result.data.search);
+			}
+			else {
+				HKUCDialog.alert(result.message);
+			}
 		}
 
 		destructor(){

@@ -19,9 +19,12 @@ let urlEncode = function (param, key, encode) {
 	return paramStr;
 };
 
+function get_user(){
+	return ElectronConfig.get('user_data', null);
+}
 function login(login_data){
 	let ajax = new Ajax({
-		url:'http://local.hkuclion.com/User/ajax_login',
+		url:`${ElectronConfig.get('server')}/User/ajax_login`,
 		method:'POST',
 		data:login_data
 	});
@@ -34,7 +37,7 @@ function login(login_data){
 }
 function logout(){
 	let ajax = new Ajax({
-		url:'http://local.hkuclion.com/User/ajax_logout',
+		url:`${ElectronConfig.get('server')}/User/ajax_logout`,
 		method:'GET',
 	});
 
@@ -42,6 +45,35 @@ function logout(){
 		ElectronConfig.delete('login_data');
 		ElectronConfig.set('user_data', response_data.data);
 		return response_data;
+	});
+}
+function auto_login_ajax(ajax_options){
+	let ajax = new Ajax(ajax_options);
+
+	return new Promise((resolve,reject)=>{
+		ajax.then((response_data) => {
+			if (response_data && response_data.result == 'login') {
+				let login_data = ElectronConfig.get('login_data', null);
+				if (login_data) {
+					login(login_data).then((response_data) => {
+						if (response_data && response_data.result == 'success') {
+							let ajax = new Ajax(data);
+							ajax.then((response_data) => {
+								resolve(response_data);
+							})
+						}
+					});
+				}
+				else {
+					resolve(response_data);
+				}
+			}
+			else {
+				resolve(response_data);
+			}
+		}, (error) => {
+			reject(extractError(error));
+		});
 	});
 }
 
@@ -53,7 +85,7 @@ function extractError(error){
 ipcMain.on('SERIAL_CALL', (ev, serial, type, data) => {
 	switch (type) {
 		case 'user': {
-			ev.sender.send('SERIAL_CALL', serial, 'success', ElectronConfig.get('user_data',null));
+			ev.sender.send('SERIAL_CALL', serial, 'success', get_user());
 			break;
 		}
 		case 'login':{
@@ -73,32 +105,18 @@ ipcMain.on('SERIAL_CALL', (ev, serial, type, data) => {
 			break;
 		}
 		case 'ajax':{
-			let ajax = new Ajax(data);
-			ajax.then((response_data)=>{
-				if(response_data && response_data.result=='login'){
-					let login_data = ElectronConfig.get('login_data',null);
-					if(login_data){
-						login(login_data).then((response_data)=>{
-							if(response_data && response_data.result == 'success'){
-								let ajax = new Ajax(data);
-								ajax.then((response_data) => {
-									ev.sender.send('SERIAL_CALL', serial, 'success', response_data);
-								})
-							}
-						});
-					}
-					else{
-						ev.sender.send('SERIAL_CALL', serial, 'success', response_data);
-					}
-				}
-				else{
-					ev.sender.send('SERIAL_CALL', serial, 'success', response_data);
-				}
+			auto_login_ajax(data).then((response_data)=>{
+				ev.sender.send('SERIAL_CALL', serial, 'success', response_data);
 			},(error)=>{
-				ev.sender.send('SERIAL_CALL', serial, 'error', extractError(error));
+				ev.sender.send('SERIAL_CALL', serial, 'error', error);
 			});
 		}
 	}
 });
 
-
+module.exports = {
+	get_user,
+	login,
+	logout,
+	auto_login_ajax
+};

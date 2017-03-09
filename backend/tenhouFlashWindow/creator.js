@@ -39,9 +39,19 @@ module.exports = function () {
 	});
 
 	window.webContents.on('dom-ready',(ev)=>{
-		window.webContents.executeJavaScript('document.getElementsByTagName("embed")[0].oncontextmenu=function(){ FlashContextMenu();return false; }');
+		window.webContents.executeJavaScript(`
+			document.getElementsByTagName("embed")[0].addEventListener('contextmenu',function(event){
+				FlashContextMenu();
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			},true);
+		`);
 	});
-	window.webContents.openDevTools();
+	window.webContents.on('context-menu', (ev) => {
+		alert('context-menu');
+		ev.preventDefault();
+	});
+	//window.webContents.openDevTools();
 
 	ipcMain.on('FLASH_CONTEXT_MENU',()=>{
 		window.webContents.sendInputEvent({
@@ -74,6 +84,7 @@ module.exports = function () {
 				}
 			})
 		}
+		ipcMain.removeAllListeners('FLASH_CONTEXT_MENU');
 	});
 
 	return window;

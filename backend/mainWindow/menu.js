@@ -10,30 +10,17 @@ let menuItem_Paifu = new MenuItem({
 		{
 			label:'获取远程',
 			click:function () {
-				let remote_paifu_strings = Operation.get_remote_paifu();
-				dialog.showMessageBox({
-					type:'info',
-					title:'提示',
-					message:'Click'
-				});
+				WindowManager.getWindow('main').webContents.send(
+					'GET_PAIFU','remote'
+				);
 			},
 			accelerator:'Ctrl+R'
 		},
 		{
 			label:'查看本地',
 			click:function() {
-				let local_paifu_strings = Operation.get_local_paifu();
-				if (!local_paifu_strings) {
-					dialog.showMessageBox({
-						type:'info',
-						message:'获取本地牌谱失败',
-					});
-					return;
-				}
-
 				WindowManager.getWindow('main').webContents.send(
-					'SHOW_PAIFU_LOCAL',
-					local_paifu_strings
+					'GET_PAIFU','local'
 				);
 			},
 			accelerator:'Ctrl+L'
@@ -78,15 +65,21 @@ let menuItem_View = new MenuItem({
 });
 
 let menuItem_Option = new MenuItem({
-	label:'选项',
+	label:'选项 (&C)',
 	type:'submenu',
 	submenu:[
 		{
+			label:'首选项 (&S)',
+			click:function () {
+				WindowManager.getWindow('config');
+			},
+		},
+		/*{
 			label:'清除配置',
 			click:function(){
 				require('electron-json-config').purge();
 			}
-		},
+		},*/
 		{
 			label:'牌谱来源配置',
 			click:function (item, focusedWindow) {
