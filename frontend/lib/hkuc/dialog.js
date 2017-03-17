@@ -70,28 +70,29 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 			this.instance = this.$view.dialog('instance');
 			this.$view.data('this',this);
 
-			this.$view.parent().on('dialog_ok',()=>{
+			this.$view.parent().on('dialogok',()=>{
 				this.close();
 				return false;
-			}).on('dialog_cancel', (...args) => {
+			}).on('dialogcancel', (...args) => {
 				this.close();
 				return false;
 			});
 		}
 		on(eventName,callback){
-			this.$view.on(eventName,(...args)=>{
-				return callback.call(this,...args);
+			this.$view.on('dialog' + eventName, (...args) => {
+				return callback.call(this, ...args);
 			});
+
 			return this;
 		}
-		off(...args){
-			this.$view.off(...args);
+		off(eventName, callback){
+			this.$view.off('dialog' + eventName,callback);
 			return this;
 		}
 
 		close(){
 			this.instance.destroy();
-			this.$view.parent().off('dialog_ok,dialog_cancel');
+			this.$view.parent().off('dialogok,dialogcancel');
 			this.$view.off().remove();
 		}
 		show(){
@@ -137,13 +138,13 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 						'text':'确定',
 						'autofocus':true,
 						'click':function(){
-							$(this).trigger('dialog_ok');
+							$(this).trigger('dialogok');
 						},
 					},
 					{
 						'text':'取消',
 						'click':function () {
-							$(this).trigger('dialog_cancel');
+							$(this).trigger('dialogcancel');
 						},
 					},
 				],
@@ -169,13 +170,13 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 						'autofocus':true,
 						'click':function () {
 							let form_data = HKUC_DIALOG_UTIL.parseSerializeArray($(this).find('form').serializeArray());
-							$(this).trigger('dialog_ok', form_data.prompt.value);
+							$(this).trigger('dialogok', form_data.prompt.value);
 						},
 					},
 					{
 						'text':'取消',
 						'click':function () {
-							$(this).trigger('dialog_cancel');
+							$(this).trigger('dialogcancel');
 						},
 					},
 				],
@@ -203,7 +204,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 		 },
 		 {name:'data[User][remember]', type:'checker', label:'记住密码', value:'1'},
 		 {name:'data[User][content]', type:'textarea', label:'附加信息', value:'a<textarea>b</textarea>c'},
-		 ], '登录').on('dialog_ok',(ev,value)=>{console.log(value)});
+		 ], '登录').on('dialogok',(ev,value)=>{console.log(value)});
 		 */
 		static form(message, options = {}) {
 			if (typeof(options) == 'string') {
@@ -304,13 +305,13 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 						'autofocus':true,
 						'click':function () {
 							let form_data = HKUC_DIALOG_UTIL.parseSerializeArray($(this).find('form').serializeArray());
-							$(this).trigger('dialog_ok', form_data);
+							$(this).trigger('dialogok', form_data);
 						},
 					},
 					{
 						'text':'取消',
 						'click':function () {
-							$(this).trigger('dialog_cancel');
+							$(this).trigger('dialogcancel');
 						},
 					},
 				],
