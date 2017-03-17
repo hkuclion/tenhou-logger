@@ -32,7 +32,8 @@ module.exports = function(){
 		slashes:true
 	}));
 
-	window.on('ready-to-show', () => {
+	//window.on('ready-to-show', () => {
+	window.webContents.on('did-finish-load', () => {
 		window.show();
 		window.focus();
 	});

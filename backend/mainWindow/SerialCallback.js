@@ -57,7 +57,7 @@ function auto_login_ajax(ajax_options){
 				if (login_data) {
 					login(login_data).then((response_data) => {
 						if (response_data && response_data.result == 'success') {
-							let ajax = new Ajax(data);
+							let ajax = new Ajax(ajax_options);
 							ajax.then((response_data) => {
 								resolve(response_data);
 							})

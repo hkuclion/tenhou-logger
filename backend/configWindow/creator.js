@@ -6,8 +6,8 @@ const WindowManager = require('../utility/WindowManager');
 
 const windowStateKeeper = require('electron-window-state');
 let windowState = windowStateKeeper({
-	defaultWidth:800,
-	defaultHeight:600,
+	defaultWidth:640,
+	defaultHeight:480,
 	file:'window_' + path.basename(__dirname) + '.json'
 });
 
@@ -20,6 +20,7 @@ module.exports = function () {
 		useContentSize:true,
 		autoHideMenuBar:true,
 		parent:WindowManager.getWindow('main'),
+		modal:true,
 	});
 	windowState.manage(window);
 	window.setMenu(null);
@@ -30,7 +31,7 @@ module.exports = function () {
 		slashes:true
 	}));
 
-	window.webContents.openDevTools();
+	//window.webContents.openDevTools();
 
 	return window;
 };

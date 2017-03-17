@@ -20,7 +20,7 @@ requirejs(['model/Setting','jquery','lib/hkuc/dialog'], function (Setting,$, HKU
 				{name:'file', type:'text', label:'文件', readonly:true,extra:'<a id="selectSource" class="button fa fa-file" style="padding-top:2px; padding-bottom:2px">选择文件</a>'},
 			],{
 				title:'添加牌谱来源',
-			}).on('dialog_ok',(ev,value)=>{
+			}).on('ok',(ev,value)=>{
 				if (!value.type) {
 					HKUCDialog.alert('请选择类型');
 					return false;

@@ -39,7 +39,7 @@ define(
 		bindEvent(){
 			if(this.user){
 				this.$view.find('#logout').on('click',()=>{
-					let confirm_dialog = HKUCDialog.confirm('确认要退出吗？',{id:'UserInfo_confirm'}).on('dialog_ok', () => {
+					let confirm_dialog = HKUCDialog.confirm('确认要退出吗？',{id:'UserInfo_confirm'}).on('ok', () => {
 						let info_dialog = HKUCDialog.alert('数据提交中，请稍候…', {title:'请等待', persist:true, modal:true});
 						SerialCall.call('logout').then((data) => {
 							info_dialog.close();
@@ -65,7 +65,7 @@ define(
 					],{
 						title:'登录',
 						id:'UserInfo_login',
-					}).on('dialog_ok', (ev,data) => {
+					}).on('ok', (ev,data) => {
 						data.User.password = RSA.encode(data.User.password);
 
 						let info_dialog = HKUCDialog.alert('数据提交中，请稍候…', {title:'请等待', persist:true, modal:true});
