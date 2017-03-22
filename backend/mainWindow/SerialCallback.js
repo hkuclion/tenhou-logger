@@ -20,7 +20,7 @@ let urlEncode = function (param, key, encode) {
 };
 
 function get_user(){
-	return ElectronConfig.get('user_data', null);
+	return ElectronConfig.get('user_data', false);
 }
 function login(login_data){
 	let ajax = new Ajax({
@@ -43,7 +43,7 @@ function logout(){
 
 	return ajax.then((response_data) => {
 		ElectronConfig.delete('login_data');
-		ElectronConfig.set('user_data', response_data.data);
+		ElectronConfig.set('user_data', false);
 		return response_data;
 	});
 }
@@ -85,30 +85,30 @@ function extractError(error){
 ipcMain.on('SERIAL_CALL', (ev, serial, type, data) => {
 	switch (type) {
 		case 'user': {
-			ev.sender.send('SERIAL_CALL', serial, 'success', get_user());
+			ev.sender.send(`SERIAL_CALL_${serial}`, 'success', get_user());
 			break;
 		}
 		case 'login':{
 			login(data).then((response_data)=>{
-				ev.sender.send('SERIAL_CALL', serial, 'success', response_data);
+				ev.sender.send(`SERIAL_CALL_${serial}`, 'success', response_data);
 			}, (error) => {
-				ev.sender.send('SERIAL_CALL', serial, 'error', extractError(error));
+				ev.sender.send(`SERIAL_CALL_${serial}`, 'error', extractError(error));
 			});
 			break;
 		}
 		case 'logout':{
 			logout().then((response_data) => {
-				ev.sender.send('SERIAL_CALL', serial, 'success', response_data);
+				ev.sender.send(`SERIAL_CALL_${serial}`, 'success', response_data);
 			}, (error) => {
-				ev.sender.send('SERIAL_CALL', serial, 'error', extractError(error));
+				ev.sender.send(`SERIAL_CALL_${serial}`, 'error', extractError(error));
 			});
 			break;
 		}
 		case 'ajax':{
 			auto_login_ajax(data).then((response_data)=>{
-				ev.sender.send('SERIAL_CALL', serial, 'success', response_data);
+				ev.sender.send(`SERIAL_CALL_${serial}`, 'success', response_data);
 			},(error)=>{
-				ev.sender.send('SERIAL_CALL', serial, 'error', error);
+				ev.sender.send(`SERIAL_CALL_${serial}`, 'error', error);
 			});
 		}
 	}

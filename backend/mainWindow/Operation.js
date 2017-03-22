@@ -1,8 +1,5 @@
 const {ipcMain} = require('electron');
 const ElectronConfig = require('electron-json-config');
-const WindowManager = require('../utility/WindowManager');
-const SerialCallback = require('./SerialCallback');
-
 
 let get_remote_paifu_conditions = {};
 
@@ -46,10 +43,6 @@ class Operation{
 				return null;
 			}
 		}
-	}
-
-	static get_remote_paifu(){
-		WindowManager.getWindow('main').webContents.send('GET_REMOTE_PAIFU');
 	}
 }
 

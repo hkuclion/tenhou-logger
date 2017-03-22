@@ -28,9 +28,7 @@ define(['jquery', 'lib/hkuc/template', 'template/configWindow','model/Setting','
 			this.$view.on('submit',()=>{
 				let data = DialogUtility.parseSerializeArray(this.$view.serializeArray());
 
-				for(let [key,value] of Object.entries(data)){
-					Setting.set(key,value);
-				}
+				Setting.setBulk(data);
 
 				window.close();
 				return false;

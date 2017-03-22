@@ -5,37 +5,33 @@ textarea,
 input[type=text],
 input[type=password]{ font: menu; font-size:16px; }
 
-#controller{ margin:1rem; display: flex; flex:1; }
-#content{ flex:1; height: 100%; background: white; overflow: auto; }
+#container{ margin:1rem; display: flex; flex:1; }
+#main{ flex:1; height: 100%; background: white; overflow: auto; }
 #side{ width:16em; height: 100%; background: white; margin-left: 2rem; position: relative; }
 
 #side_toggle{ font-size: 1.5rem; line-height:1em; position: absolute; top:0; left:-1.75rem; color: white; opacity: 0.7; cursor: pointer; border-radius: 0.1rem; }
 #side_toggle:hover{ opacity: 1; }
-#side_toggle > i{ display: inline-block; }
-#side_toggle > i:first-child{ display: none; }
 #side.closed{ width: 0; margin-left: 1rem; }
 #side.closed>*{ width:0; height: 0; overflow: hidden; }
 #side.closed #side_toggle{ left:-0.5em; width:auto; height:auto; }
-#side.closed #side_toggle > i{ display: none; }
-#side.closed #side_toggle > i:first-child{ display: inline-block; }
 
-#paifu_list ul{ margin: 0; padding: 0; list-style-type: none; }
-#paifu_list ul li { border-width: 1px; border-style: solid; border-color: #fff #f0f0f0 #f0f0f0 #fff; margin: 8px; padding: 5px; background: #fafafa; position: relative; }
-#paifu_list ul li.active,
-#paifu_list ul li.selected { border-color: #e8e8e8 #fff #fff #e8e8e8; background: #e0e0e0; z-index: 21 }
-#paifu_list ul li.active { background: #eeddaa; }
-#paifu_list ul li span { display: inline-block; }
-#paifu_list ul li span.line_break { display: block; height: 0; overflow: hidden; }
-#paifu_list ul li .delimiter { min-width: 0.5em; text-align: center; }
-#paifu_list ul li .date { color: #066; }
-#paifu_list ul li .date i { font-style: normal; }
-#paifu_list ul li .type { color: #333; width: 8em; }
-#paifu_list ul li .url { color: #36C; }
-#paifu_list ul li .rank { /*width:13em;*/ text-align: right; }
-#paifu_list ul li .ten { color: #aaa; }
-#paifu_list ul li .date,
-#paifu_list ul li .type,
-#paifu_list ul li .user{ white-space: nowrap; word-break: keep-all; }
+.paifu-list ul{ margin: 0; padding: 0; list-style-type: none; }
+.paifu-list ul li { border-width: 1px; border-style: solid; border-color: #fff #f0f0f0 #f0f0f0 #fff; margin: 8px; padding: 5px; background: #fafafa; position: relative; }
+.paifu-list ul li.active,
+.paifu-list ul li.selected { border-color: #e8e8e8 #fff #fff #e8e8e8; background: #e0e0e0; z-index: 21 }
+.paifu-list ul li.active { background: #eeddaa; }
+.paifu-list ul li span { display: inline-block; }
+.paifu-list ul li span.line_break { display: block; height: 0; overflow: hidden; }
+.paifu-list ul li .delimiter { min-width: 0.5em; text-align: center; }
+.paifu-list ul li .date { color: #066; }
+.paifu-list ul li .date i { font-style: normal; }
+.paifu-list ul li .type { color: #333; width: 8em; }
+.paifu-list ul li .url { color: #36C; }
+.paifu-list ul li .rank { /*width:13em;*/ text-align: right; }
+.paifu-list ul li .ten { color: #aaa; }
+.paifu-list ul li .date,
+.paifu-list ul li .type,
+.paifu-list ul li .user{ white-space: nowrap; word-break: keep-all; }
 
 .button { line-height: 1.25; padding: 0 0.5em; -webkit-appearance: button; -moz-appearance: button; appearance: button; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 #login::after{content:'登录';}

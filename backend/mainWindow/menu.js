@@ -1,6 +1,7 @@
 const {app, Menu, MenuItem,dialog} = require('electron');
 const WindowManager=require('../utility/WindowManager');
 const Operation = require('./Operation');
+const SerialCallback = require('./SerialCallback');
 
 let mainMenu = new Menu();
 let menuItem_Paifu = new MenuItem({
