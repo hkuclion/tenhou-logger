@@ -24,6 +24,9 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 		}
 
 		setPage(page){
+			if(!page || page<1)page = 1;
+
+			if(page == this.page.page)return false;
 			this.page.page=page;
 			return this.getRemote();
 		}

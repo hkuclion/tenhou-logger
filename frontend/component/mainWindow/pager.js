@@ -50,7 +50,7 @@ define(['Vue','css!lib/layPage/laypage.css'], function (Vue) {
 				groups:5,
 				skip:true,
 				skin:'molv',
-				jumpTo:undefined
+				jumpTo:this.page.page
 			};
 		},
 		computed:{
@@ -82,6 +82,11 @@ define(['Vue','css!lib/layPage/laypage.css'], function (Vue) {
 			},
 			dict_flow:function () {
 				return !this.prev && this.groups === 0;
+			}
+		},
+		watch:{
+			curr:function(){
+				this.jumpTo = this.curr;
 			}
 		},
 		methods:{
