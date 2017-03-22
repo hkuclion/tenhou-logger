@@ -14,21 +14,35 @@ define(['Vue'], function (Vue) {
 	return {
 		template:`
 		<div class="paifu-list">
-			<ul v-if="content.paifus && content.paifus.length">
-				<paifu @selected="paifuSelected" v-for="(paifu,index) in content.paifus" :key="paifu.file" :paifu="paifu" :index="index"></paifu>
+			<ul v-if="PaifuList.paifus && PaifuList.paifus.length">
+				<paifu @selected="paifuSelected" @contextmenu="contextMenu" :shiftHold="shiftHold" v-for="(paifu,index) in PaifuList.paifus" :key="paifu.file" :paifu="paifu" :index="index"></paifu>
 			</ul>
-			<pager v-if="content.page" v-on:page="requestPage" :page="content.page"></pager>
+			<pager v-if="PaifuList.page" v-on:page="requestPage" :page="PaifuList.page"></pager>
 		</div>
 		`,
 		props:[
 			'content'
 		],
+		data:function(){
+			return {
+				shiftHold:false
+			};
+		},
+		computed:{
+			PaifuList:function(){
+				return this.content;
+			}
+		},
 		methods:{
 			paifuSelected:function (index,shiftKey,ctrlKey) {
-				console.log('paifuSelected', index, shiftKey, ctrlKey);
+				this.shiftHold = shiftKey;
+				this.PaifuList.paifuSelected(index, shiftKey, ctrlKey);
+			},
+			contextMenu:function(ev){
+				this.PaifuList.showContextMenu(ev);
 			},
 			requestPage:function(page){
-				this.content.setPage(page);
+				this.PaifuList.setPage(page);
 			}
 		}
 	}

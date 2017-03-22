@@ -1,7 +1,12 @@
 /**
  * Created by hkuclion on 2017/3/17.
  */
-define(function(){
+define(['lib/hkuc/template'],function(HKUCTemplate){
+	let paifu_text_template= `{{$paifu.date}} | {{$helpers.typeToString($paifu.type)}} | {{$paifu.url}}
+{{$paifu.rank}}位{{foreach $paifu.un as $index=>$user}}{{if $user}} {{'',$score=$paifu.sc[$index * 2 + 1]}}{{$user}}({{$score>=0?"+":""}}{{$score}}{{if $paifu.sc.length>8}},{{$paifu.sc[$index * 2+ 8]}}枚{{/if}}){{/if}}{{/foreach}}`;
+	HKUCTemplate.helper('typeToString', typeToString);
+	HKUCTemplate.compile('paifu_text', paifu_text_template, {compress:false, escape:false});
+
 	class Paifu {
 		get componentName() {
 			return 'paifu';
@@ -9,6 +14,7 @@ define(function(){
 
 		constructor(data) {
 			Object.assign(this,data);
+			this.selected=false;
 		}
 
 		get type_string(){
@@ -17,6 +23,13 @@ define(function(){
 
 		static fromLogStr(log_str) {
 			return new Paifu(parseLogStr(log_str));
+		}
+
+		toString(type = 'text') {
+			if (type == 'logstr') {
+				return this.log_str;
+			}
+			return HKUCTemplate.render('paifu_text',{$paifu:this});
 		}
 	}
 

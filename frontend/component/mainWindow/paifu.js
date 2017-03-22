@@ -18,7 +18,7 @@ define(['Vue'], function (Vue) {
 
 	return {
 		template:`
-		<li @click="select" @contextmenu="contextMenu">
+		<li :class="{selected:paifu.selected}" @click="select" @selectstart="selectStart" @contextmenu="contextMenu">
 			<span class="date">
 				<i class="year">{{paifu.date.substr(0,5)}}</i>
 				<i>{{paifu.date.substr(5)}}</i>
@@ -36,16 +36,22 @@ define(['Vue'], function (Vue) {
 		</li>
 		`,
 		'props':[
-			'paifu','index'
+			'paifu','index','shiftHold'
 		],
 		methods:{
 			select:function (ev) {
 				if(ev.srcElement == this.$el) {
 					this.$emit('selected',this.index,ev.shiftKey,ev.ctrlKey);
+					ev.preventDefault();
 				}
 			},
-			contextMenu:function(){
-				console.log('contextMenu');
+			selectStart:function(ev){
+				if (ev.srcElement == this.$el) {
+					ev.preventDefault();
+				}
+			},
+			contextMenu:function(ev){
+				this.$emit('contextmenu',ev);
 			}
 		},
 		components:{
