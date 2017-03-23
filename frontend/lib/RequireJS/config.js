@@ -5,5 +5,11 @@ requirejs.config({
 		'jqueryui':'lib/jQuery/jqueryui',
 		'css':'lib/RequireJS/css.min',
 		'Vue':'lib/Vue/vue',
+		'WdatePicker':'lib/My97DatePicker/WdatePicker',
 	},
+	shim:{
+		WdatePicker:{
+			exports:'WdatePicker'
+		}
+	}
 });

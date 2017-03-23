@@ -35,7 +35,7 @@ define(['Vue'], function (Vue) {
 			</template>
 		</li>
 		`,
-		'props':[
+		props:[
 			'paifu','index','shiftHold'
 		],
 		methods:{

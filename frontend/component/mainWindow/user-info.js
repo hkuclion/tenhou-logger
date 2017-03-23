@@ -17,10 +17,10 @@ define(['Vue'], function (Vue) {
 			</template>
 		</div>
 		`,
-		'props':[
+		props:[
 			'userInfo'
 		],
-		'methods':{
+		methods:{
 			logout:function(){
 				this.userInfo.logout();
 			},

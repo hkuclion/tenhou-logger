@@ -10,6 +10,9 @@ define(['Vue'], function (Vue) {
 		requirejs(['component/mainWindow/pager'], resolve);
 	});
 
+	Vue.component('search', function (resolve, reject) {
+		requirejs(['component/mainWindow/search'], resolve);
+	});
 
 	return {
 		template:`
@@ -18,6 +21,7 @@ define(['Vue'], function (Vue) {
 				<paifu @selected="paifuSelected" @contextmenu="contextMenu" :shiftHold="shiftHold" v-for="(paifu,index) in PaifuList.paifus" :key="paifu.file" :paifu="paifu" :index="index"></paifu>
 			</ul>
 			<pager v-if="PaifuList.page" v-on:page="requestPage" :page="PaifuList.page"></pager>
+			<search @change="searchChanged" :search="PaifuList.search"></search>
 		</div>
 		`,
 		props:[
@@ -40,6 +44,9 @@ define(['Vue'], function (Vue) {
 			},
 			contextMenu:function(ev){
 				this.PaifuList.showContextMenu(ev);
+			},
+			searchChanged:function(){
+				this.PaifuList.setPage();
 			},
 			requestPage:function(page){
 				this.PaifuList.setPage(page);

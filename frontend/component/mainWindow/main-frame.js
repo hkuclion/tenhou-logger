@@ -12,7 +12,7 @@ define(['Vue'], function (Vue) {
 			<component v-if="mainFrame.content" v-bind:content="mainFrame.content" v-bind:is="mainFrame.content.componentName"></component>
 		</article>
 		`,
-		'props':[
+		props:[
 			'mainFrame'
 		]
 	}

@@ -33,6 +33,19 @@ input[type=password]{ font: menu; font-size:16px; }
 .paifu-list ul li .type,
 .paifu-list ul li .user{ white-space: nowrap; word-break: keep-all; }
 
+.paifu-list .search{}
+.paifu-list .search [role]{ display: inline-block; background: #036; border-radius: 4px; padding: 0 2px; margin-bottom: 3px; white-space: nowrap; word-break: keep-all; color: #ccc; }
+.paifu-list .search [role]+[role]{ margin-left: 1em; }
+.paifu-list .search [role]::before{ color: white; margin-right: 3px; }
+.paifu-list .search [role=startDate]::before { content: '开始日期'; }
+.paifu-list .search [role=endDate]::before { content: '结束日期'; }
+.paifu-list .search [role=player]::before { content: '主玩家'; }
+.paifu-list .search [role=toPlayer]::before { content: '对战玩家'; }
+.paifu-list .search [role=rank]::before { content: '顺位'; }
+.paifu-list .search [role=comment]::before { content: '注释'; }
+.paifu-list .search [role=lobby]::before { content: '个室'; }
+.paifu-list .search [role=type]::before { content: '类型'; }
+
 .button { line-height: 1.25; padding: 0 0.5em; -webkit-appearance: button; -moz-appearance: button; appearance: button; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 #login::after{content:'登录';}
 #register::after { content: '注册'; }

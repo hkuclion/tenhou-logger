@@ -6,6 +6,17 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 	const {Menu}=electron.remote;
 	const {clipboard, ipcRenderer} = electron;
 
+	const default_search={
+		start_date:null,
+		end_date:null,
+		player:null,
+		toplayer:null,
+		rank:null,
+		comment:null,
+		lobby:null,
+		type:null
+	};
+
 	return class PaifuList{
 		get componentName(){
 			return "paifu-list";
@@ -14,7 +25,7 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 		constructor(){
 			this.paifus=[];
 			this.page = null;
-			this.search = {};
+			this.search = null;
 
 			this.contextmenu = null;
 			this.contextmenu_items = {};
@@ -24,10 +35,12 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 		}
 
 		setPage(page){
-			if(!page || page<1)page = 1;
+			if(arguments.length) {
+				if (!page || page < 1) page = 1;
 
-			if(page == this.page.page)return false;
-			this.page.page=page;
+				if (page == this.page.page)return false;
+				this.page.page = page;
+			}
 			return this.getRemote();
 		}
 
@@ -177,17 +190,23 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 
 			this.paifus = paifus;
 			this.page = null;
+			this.search = Object.assign({},default_search,this.search);
 		}
 
 		async getRemote(){
 			let dialog = HKUCDialog.alert('获取远程数据中……');
 
+			let data = this.search ? this.search : {};
+
+			let post_data = {};
+			for(let key in default_search){
+				if(data[key])post_data[key]=data[key];
+			}
+
 			let result = await SerialCall.call('ajax', {
 				url:`${Setting.get('server')}/Tlog/ajax_get`,
 				method:'POST',
-				data:Object.assign(
-					this.search,{page:this.page?this.page.page:1}
-				)
+				data:Object.assign(post_data, {page:this.page ? this.page.page : 1})
 			});
 
 			dialog.close();
@@ -203,7 +222,7 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 					this.page.page = result.data.page.Tlog.page;
 				}
 				this.page = result.data.page.Tlog;
-				this.search = result.data.search;
+				this.search = Object.assign({}, default_search,result.data.search);
 			}
 			else {
 				HKUCDialog.alert(result.message);
