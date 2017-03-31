@@ -18,7 +18,11 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 		}
 
 		get type_string(){
-			return typeToString(this.type);
+			return translateType(this.type,'string');
+		}
+
+		get type_array(){
+			return translateType(this.type, 'array');
 		}
 
 		static fromLogStr(log_str) {
@@ -86,56 +90,81 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 	}
 
 	function typeToString(type) {
+		return translateType(type,'string');
+	}
+
+	function translateType(type,format) {
 		let p_type = type;
-		let ret_str = '';
+		let ret = null;
 		let is_jansou = p_type & 0x600;
 		let is_gino = p_type & 0x800;
 		let TYPE = {
 			sanma:{
 				filter:0x10,
-				display:{0x00:'', 0x10:'三'}
+				display:{0x00:'', 0x10:'三'},
+				data:{0x00:'四', 0x10:'三'}
 			},
 			gino:{
 				filter:0x800,
-				display:{0x00:'', 0x800:'技'}
+				display:{0x00:'', 0x800:'技'},
+				data:{0x00:null, 0x800:'技'}
 			},
 			taku:{
 				filter:0xa0,
-				display:is_jansou ? {0xa0:'孔', 0x80:'银', 0x20:'琥', 0x00:'若'} : {0xa0:'凤', 0x80:'上', 0x20:'特', 0x00:'般'}
+				display:is_jansou ? {0xa0:'孔', 0x80:'银', 0x20:'琥', 0x00:'若'} : {0xa0:'凤', 0x80:'上', 0x20:'特', 0x00:'般'},
+				data:is_jansou ? {0xa0:'孔', 0x80:'银', 0x20:'琥', 0x00:'若'} : {0xa0:'凤', 0x80:'上', 0x20:'特', 0x00:'般'}
 			},
 			hanchan:{
 				filter:0x8,
-				display:{0x00:'东', 0x8:'南'}
+				display:{0x00:'东', 0x8:'南'},
+				data:{0x00:'东', 0x8:'南'}
 			},
 			kui:{
 				filter:0x4,
-				display:is_jansou ? {0x00:'喰'} : {0x00:'喰', 0x4:''}
+				display:is_jansou ? {0x00:'喰'} : {0x00:'喰', 0x4:''},
+				data:is_jansou ? {0x00:'食'} : {0x00:'食', 0x4:'无'}
 			},
 			aka:{
 				filter:0x2,
-				display:is_jansou ? {0x00:'赤'} : {0x00:'赤', 0x2:''}
+				display:is_jansou ? {0x00:'赤'} : {0x00:'赤', 0x2:''},
+				data:is_jansou ? {0x00:'赤'} : {0x00:'赤', 0x2:'无'}
 			},
 			soku:is_jansou ? {
-					filter:0x8,
-					display:{0x00:'速', 0x8:''}
-				} : {
-					filter:0x40,
-					display:{0x00:'', 0x40:'速'}
-				},
+				filter:0x8,
+				display:{0x00:'速', 0x8:''},
+				data:{0x00:'速', 0x8:'慢'}
+			} : {
+				filter:0x40,
+				display:{0x00:'', 0x40:'速'},
+				data:{0x00:'慢', 0x40:'速'}
+			},
 			shuku:{
 				filter:0x600,
-				display:{0x0:'', 0x200:'祝２', 0x400:'祝０', 0x600:'祝５'}
+				display:{0x0:'', 0x200:'祝２', 0x400:'祝０', 0x600:'祝５'},
+				data:{0x0:'无', 0x200:'２', 0x400:'０', 0x600:'５'}
 			}
 		};
 
-		for (let key of Object.keys(TYPE)) {
-			if (is_gino) {
-				if (key == 'taku' || key == 'hanchan')continue;
+		if(format == 'string') {
+			ret = '';
+			for (let key of Object.keys(TYPE)) {
+				if (is_gino) {
+					if (key == 'taku' || key == 'hanchan')continue;
+				}
+				ret += TYPE[key].display[p_type & TYPE[key].filter];
 			}
-			ret_str += TYPE[key].display[p_type & TYPE[key].filter];
+		}
+		else if(format == 'array'){
+			ret = {};
+			for (let key of Object.keys(TYPE)) {
+				if (is_gino) {
+					if (key == 'taku' || key == 'hanchan')continue;
+				}
+				ret[key] = TYPE[key].data[p_type & TYPE[key].filter];
+			}
 		}
 
-		return ret_str;
+		return ret;
 	}
 
 	return Paifu;

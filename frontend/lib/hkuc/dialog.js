@@ -118,7 +118,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 		}
 
 		static alert(message, options = {}) {
-			if (typeof options == 'string') {
+			if (typeof options === 'string') {
 				options = {title:options};
 			}
 
@@ -127,7 +127,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 		}
 
 		static confirm(message, options = {}) {
-			if (typeof(options) == 'string') {
+			if (typeof options === 'string') {
 				options = {title:options};
 			}
 
@@ -154,7 +154,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 		}
 
 		static prompt(message, options = {}) {
-			if (typeof(options) == 'string') {
+			if (typeof options === 'string') {
 				options = {title:options};
 			}
 
@@ -207,7 +207,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 		 ], '登录').on('dialogok',(ev,value)=>{console.log(value)});
 		 */
 		static form(message, options = {}) {
-			if (typeof(options) == 'string') {
+			if (typeof options === 'string') {
 				options = {title:options};
 			}
 
@@ -219,7 +219,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 				let form_item_began=false;
 
 				for (let field_info of message) {
-					if(typeof field_info == 'string'){
+					if(typeof field_info === 'string'){
 						field_html+=field_info;
 						continue;
 					}
@@ -230,7 +230,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 						form_item_began=true;
 					}
 					if (!field_info.name)continue;
-					field_html += '<tr><td class="hkuc_dialog_form_label">' + (field_info.label ? field_info.label : field_info.name) + '</td><td class="hkuc_dialog_form_field">';
+					field_html += '<tr><td class="hkuc_dialog_form_label">' + (field_info.label ? field_info.label : field_info.label===null?'':field_info.name) + '</td><td class="hkuc_dialog_form_field">';
 
 					switch (field_info.type) {
 						case 'text': {
@@ -253,7 +253,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 								let default_value = 'value' in field_info && key == field_info.value ? 'checked="checked"' : '';
 								let field_index = window.setTimeout(() => {
 								});
-								field_html += `<span class="hkuc_dialog_form_group"><input type="${field_info.type}" id="${identifier}${field_index}" name="${field_info.name}" value="${HKUC_DIALOG_UTIL.html_encode(key)}" ${default_value} /><label for="${identifier}${field_index}">${field_info.options[key]}</label></span>`;
+								field_html += `<span class="hkuc_dialog_form_group"><input type="${field_info.type}" id="${identifier}${field_index}" name="${field_info.name}${field_info.type==='checkbox'?'[]':''}" value="${HKUC_DIALOG_UTIL.html_encode(key)}" ${default_value} /><label for="${identifier}${field_index}">${field_info.options[key]}</label></span>`;
 							}
 							break;
 						}
@@ -305,7 +305,7 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 						'autofocus':true,
 						'click':function () {
 							let form_data = HKUC_DIALOG_UTIL.parseSerializeArray($(this).find('form').serializeArray());
-							$(this).trigger('dialogok', form_data);
+							$(this).trigger('dialogok', [form_data]);
 						},
 					},
 					{

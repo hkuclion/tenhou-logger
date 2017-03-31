@@ -24,6 +24,7 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 
 		constructor(){
 			this.paifus=[];
+			this.source=null;
 			this.page = null;
 			this.search = null;
 
@@ -181,11 +182,15 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 		}
 
 		getLocal(){
+			this.source = 'local';
 			let log_strs = ipcRenderer.sendSync('GET_LOCAL_PAIFU');
 
 			let paifus = [];
 			for(let log_str of log_strs){
-				paifus.push(Paifu.fromLogStr(log_str));
+				let paifu = Paifu.fromLogStr(log_str);
+				if(!this.localMatch(paifu))continue;
+
+				paifus.push(paifu);
 			}
 
 			this.paifus = paifus;
@@ -193,7 +198,41 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 			this.search = Object.assign({},default_search,this.search);
 		}
 
+		localMatch(paifu){
+			if(!this.search)return true;
+			if(this.search.start_date && this.search.start_date > paifu.date){
+				return false;
+			}
+			if (this.search.end_date && this.search.end_date < paifu.date) {
+				return false;
+			}
+			if(this.search.lobby && parseInt(this.search.lobby) !== paifu.lobby){
+				return false;
+			}
+			if(this.search.player && !this.search.player.split(' ').includes(paifu.un[0])){
+				return false;
+			}
+			if(this.search.toplayer && ![paifu.un[1],paifu.un[2],paifu.un[3]].includes(this.search.toplayer)){
+				return false;
+			}
+			if (this.search.rank && !this.search.rank.split(' ').map(x=>parseInt(x)).includes(paifu.rank)) {
+				return false;
+			}
+			if(this.search.type){
+				let paifu_type = paifu.type_array;
+				for(let key of Object.keys(this.search.type)){
+					if(!this.search.type[key].includes(paifu_type[key])){
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
 		async getRemote(){
+			this.source = 'remote';
+
 			let dialog = HKUCDialog.alert('获取远程数据中……');
 
 			let data = this.search ? this.search : {};
@@ -226,6 +265,17 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 			}
 			else {
 				HKUCDialog.alert(result.message);
+			}
+		}
+
+		reload(){
+			switch(this.source){
+				case 'remote':
+					this.getRemote();
+					break;
+				case 'local':
+					this.getLocal();
+					break;
 			}
 		}
 	}

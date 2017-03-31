@@ -46,7 +46,7 @@ define(['Vue'], function (Vue) {
 				this.PaifuList.showContextMenu(ev);
 			},
 			searchChanged:function(){
-				this.PaifuList.setPage();
+				this.PaifuList.reload();
 			},
 			requestPage:function(page){
 				this.PaifuList.setPage(page);

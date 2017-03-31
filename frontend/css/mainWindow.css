@@ -34,6 +34,7 @@ input[type=password]{ font: menu; font-size:16px; }
 .paifu-list ul li .user{ white-space: nowrap; word-break: keep-all; }
 
 .paifu-list .search{}
+.paifu-list .search [role]{ cursor: pointer; }
 .paifu-list .search [role]{ display: inline-block; background: #036; border-radius: 4px; padding: 0 2px; margin-bottom: 3px; white-space: nowrap; word-break: keep-all; color: #ccc; }
 .paifu-list .search [role]+[role]{ margin-left: 1em; }
 .paifu-list .search [role]::before{ color: white; margin-right: 3px; }
