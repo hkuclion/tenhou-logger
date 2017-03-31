@@ -4,5 +4,12 @@ requirejs.config({
 		//'jquery':'https://code.jquery.com/jquery-3.1.1.slim.min',
 		'jqueryui':'lib/jQuery/jqueryui',
 		'css':'lib/RequireJS/css.min',
+		'Vue':'lib/Vue/vue',
+		'WdatePicker':'lib/My97DatePicker/WdatePicker',
 	},
+	shim:{
+		WdatePicker:{
+			exports:'WdatePicker'
+		}
+	}
 });

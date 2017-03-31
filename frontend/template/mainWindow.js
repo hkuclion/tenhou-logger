@@ -25,7 +25,7 @@ define({
 			<i>{{$paifu.date.substr(5)}}</i>
 		</span>
 		<span class="delimiter">&nbsp;|&nbsp;</span>
-		<span class="type">{{typeToString($paifu.type)}}</span>
+		<span class="type">{{paifu.constructor.typeToString(paifu.type)}}</span>
 		<span class="delimiter">&nbsp;|&nbsp;</span>
 		<span class="url">{{$paifu.url}}</span>
 		<span class="line_break"><br /></span>

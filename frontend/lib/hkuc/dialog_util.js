@@ -9,7 +9,9 @@ define(function () {
 				this.setValue(parts, value);
 			}
 
-			return SerializeArray.normalize(this.value);
+			let result = SerializeArray.normalize(this.value);
+
+			return Array.isArray(result)?{}:result;
 		}
 
 		setValue(full_paths, value) {
@@ -85,10 +87,12 @@ define(function () {
 		}
 
 		static html_encode(str){
+			if(!str)return '';
 			return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;");
 		}
 
 		static html_decode(str){
+			if (!str)return '';
 			return str.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"");
 		}
 	};

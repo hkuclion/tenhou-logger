@@ -19,6 +19,8 @@ class Ajax{
 		this.options = Object.assign({}, default_options, options);
 		let url_info = Url.parse(this.options.url);
 
+		remote_console('ajax', this.options.url);
+
 		return new Promise((resolve, reject) => {
 			session.cookies.get({domain:url_info.domain}, (error, cookies) => {
 				this.request = Net.request(Object.assign({
@@ -59,6 +61,7 @@ class Ajax{
 						}
 
 						let response_data = responseText;
+						remote_console('ajax_responded', this.options.url);
 						if (this.options.dataType == 'json') {
 							try {
 								response_data = JSON.parse(response_data);
