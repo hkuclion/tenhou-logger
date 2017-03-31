@@ -2,6 +2,7 @@ const {app, Menu, MenuItem,dialog} = require('electron');
 const WindowManager=require('../utility/WindowManager');
 const Operation = require('./Operation');
 const SerialCallback = require('./SerialCallback');
+const ElectronConfig = require('electron-json-config');
 
 let mainMenu = new Menu();
 let menuItem_Paifu = new MenuItem({
@@ -25,6 +26,21 @@ let menuItem_Paifu = new MenuItem({
 				);
 			},
 			accelerator:'Ctrl+L'
+		},
+		{
+			type:'separator',
+		},
+		{
+			label:'编辑模式',
+			type:'checkbox',
+			click:function(menuItem){
+				Operation.set_paifu_edit_mode(menuItem.checked);
+
+				WindowManager.getWindow('main').webContents.send(
+					'PAIFU_EDIT_MODE', menuItem.checked
+				);
+			},
+			checked:ElectronConfig.get('paifu_edit_mode',false)
 		},
 	],
 });
