@@ -44,6 +44,10 @@ class Operation{
 			}
 		}
 	}
+
+	static set_paifu_edit_mode(mode){
+		ElectronConfig.set('paifu_edit_mode',mode);
+	}
 }
 
 ipcMain.on('GET_LOCAL_PAIFU',(ev)=>{

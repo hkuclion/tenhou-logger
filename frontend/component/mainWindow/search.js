@@ -98,7 +98,8 @@ define(['Vue','WdatePicker','lib/hkuc/dialog'], function (Vue, WDatePicker,HKUCD
 			selectPlayer:function(ev){
 				HKUCDialog.prompt('可以用空格隔开多个用户',{
 					value:this.search.player,
-					title:'请输入主玩家名'
+					title:'请输入主玩家名',
+					id:'search',
 				}).on('ok',(ev,value)=>{
 					this.set('player',value?value:null);
 				});
@@ -110,6 +111,7 @@ define(['Vue','WdatePicker','lib/hkuc/dialog'], function (Vue, WDatePicker,HKUCD
 				HKUCDialog.prompt('暂时只支持精确匹配', {
 					value:this.search.toplayer,
 					title:'请输入对战玩家名',
+					id:'search',
 				}).on('ok', (ev, value) => {
 					this.set('toplayer', value ? value : null);
 				});
@@ -120,12 +122,16 @@ define(['Vue','WdatePicker','lib/hkuc/dialog'], function (Vue, WDatePicker,HKUCD
 			selectRank:function(ev){
 				HKUCDialog.form([
 					{name:'rank', type:'checkbox', label:null, options:{
+						'0':'未记录',
 						'1':'1位',
 						'2':'2位',
 						'3':'3位',
 						'4':'4位',
 					}, value:this.search.rank? this.search.rank.split(' '):null},
-				],'选择顺位').on('ok',(ev,data)=>{
+				],{
+					title:'选择顺位',
+					id:'search',
+				}).on('ok',(ev,data)=>{
 					let value = data.rank ? data.rank.join(' ') : null;
 					this.set('rank', value ? value : null);
 				});
@@ -137,6 +143,7 @@ define(['Vue','WdatePicker','lib/hkuc/dialog'], function (Vue, WDatePicker,HKUCD
 				HKUCDialog.prompt('*表示所有注释', {
 					value:this.search.comment,
 					title:'请输入注释内容',
+					'id':'search',
 				}).on('ok', (ev, value) => {
 					this.set('comment', value ? value : null);
 				});
@@ -148,6 +155,7 @@ define(['Vue','WdatePicker','lib/hkuc/dialog'], function (Vue, WDatePicker,HKUCD
 				HKUCDialog.prompt('0表示大厅', {
 					value:this.search.lobby,
 					title:'请输入个室号',
+					'id':'search',
 				}).on('ok', (ev, value) => {
 					this.set('lobby', value ? value : null);
 				});
@@ -213,7 +221,10 @@ define(['Vue','WdatePicker','lib/hkuc/dialog'], function (Vue, WDatePicker,HKUCD
 						options:{'无':'无', '有':'有'},
 						value:this.search.type && this.search.type.aka ? this.search.type.aka : null
 					},
-				], '选择类型').on('ok', (ev, data) => {
+				], {
+					'title':'选择类型',
+					'id':'search',
+				}).on('ok', (ev, data) => {
 					let value = Object.keys(data).length ? data : null;
 					this.set('type', value ? value : null);
 				});

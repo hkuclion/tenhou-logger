@@ -4,7 +4,6 @@
 define(['lib/hkuc/template'],function(HKUCTemplate){
 	let paifu_text_template= `{{$paifu.date}} | {{$helpers.typeToString($paifu.type)}} | {{$paifu.url}}
 {{$paifu.rank}}位{{foreach $paifu.un as $index=>$user}}{{if $user}} {{'',$score=$paifu.sc[$index * 2 + 1]}}{{$user}}({{$score>=0?"+":""}}{{$score}}{{if $paifu.sc.length>8}},{{$paifu.sc[$index * 2+ 8]}}枚{{/if}}){{/if}}{{/foreach}}`;
-	HKUCTemplate.helper('typeToString', typeToString);
 	HKUCTemplate.compile('paifu_text', paifu_text_template, {compress:false, escape:false});
 
 	class Paifu {
@@ -19,10 +18,6 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 
 		get type_string(){
 			return translateType(this.type,'string');
-		}
-
-		get type_array(){
-			return translateType(this.type, 'array');
 		}
 
 		static fromLogStr(log_str) {
@@ -76,6 +71,11 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 		ret['date'] = [params['file'].substr(0, 4), params['file'].substr(4, 2), params['file'].substr(6, 2)].join('-');
 		ret['lobby'] = parseInt(params['file'].substr(18, 4), 10);
 
+		let type_data = translateType(ret['type'],'array');
+		for(let key of Object.keys(type_data)){
+			ret['type_'+key]= type_data[key];
+		}
+
 		return ret;
 	}
 
@@ -87,10 +87,6 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 		}
 
 		return ret;
-	}
-
-	function typeToString(type) {
-		return translateType(type,'string');
 	}
 
 	function translateType(type,format) {
@@ -107,7 +103,7 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 			gino:{
 				filter:0x800,
 				display:{0x00:'', 0x800:'技'},
-				data:{0x00:null, 0x800:'技'}
+				data:{0x00:'无', 0x800:'技'}
 			},
 			taku:{
 				filter:0xa0,
@@ -157,9 +153,6 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 		else if(format == 'array'){
 			ret = {};
 			for (let key of Object.keys(TYPE)) {
-				if (is_gino) {
-					if (key == 'taku' || key == 'hanchan')continue;
-				}
 				ret[key] = TYPE[key].data[p_type & TYPE[key].filter];
 			}
 		}

@@ -18,7 +18,7 @@ define(['Vue'], function (Vue) {
 		template:`
 		<div class="paifu-list">
 			<ul v-if="PaifuList.paifus && PaifuList.paifus.length">
-				<paifu @selected="paifuSelected" @contextmenu="contextMenu" :shiftHold="shiftHold" v-for="(paifu,index) in PaifuList.paifus" :key="paifu.file" :paifu="paifu" :index="index"></paifu>
+				<paifu @selected="paifuSelected" @contextmenu="contextMenu" :shiftHold="shiftHold" v-for="(paifu,index) in PaifuList.paifus" :key="paifu.file" :paifu="paifu" :editMode="PaifuList.edit_mode" :index="index"></paifu>
 			</ul>
 			<pager v-if="PaifuList.page" v-on:page="requestPage" :page="PaifuList.page"></pager>
 			<search @change="searchChanged" :search="PaifuList.search"></search>
