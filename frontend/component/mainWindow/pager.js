@@ -12,7 +12,7 @@ define(['Vue','css!lib/layPage/laypage.css'], function (Vue) {
 			</template>
 			<!-- FirstEnd -->
 			<!-- Groups -->
-			<template v-for="index in dict_end-dict_start">
+			<template v-for="index in dict_end-dict_start+1">
 				<span v-if="index+dict_start-1==curr" :class="className+'-curr'">{{index+dict_start-1}}</span>
 				<a v-else :title="index" @click="jumpToPage(index+dict_start-1)" :class="className" :page="index+dict_start-1">{{index+dict_start-1}}</a>
 			</template>
@@ -71,14 +71,16 @@ define(['Vue','css!lib/layPage/laypage.css'], function (Vue) {
 				if (this.dict_end - dict_start < this.groups - 1) {
 					dict_start = this.dict_end - this.groups + 1;
 				}
-				return dict_start;
+
+				return Math.max(1,dict_start);
 			},
 			dict_end:function () {
 				if(this.dict_index > 1){
 					let max = this.curr + (this.groups - this.dict_poor - 1);
 					return max > this.pages ? this.pages : max;
 				}
-				return this.groups;
+
+				return Math.min(this.groups,this.pages);
 			},
 			dict_flow:function () {
 				return !this.prev && this.groups === 0;

@@ -25,7 +25,7 @@ define({
 			<i>{{$paifu.date.substr(5)}}</i>
 		</span>
 		<span class="delimiter">&nbsp;|&nbsp;</span>
-		<span class="type">{{paifu.constructor.typeToString(paifu.type)}}</span>
+		<span class="type">{{paifu.type_string}}</span>
 		<span class="delimiter">&nbsp;|&nbsp;</span>
 		<span class="url">{{$paifu.url}}</span>
 		<span class="line_break"><br /></span>
@@ -39,6 +39,6 @@ define({
 		{{/foreach}}
 		</li>
 	`,
-	paifu_text:`{{$paifu.date}} | {{$helpers.typeToString($paifu.type)}} | {{$paifu.url}}
+	paifu_text:`{{$paifu.date}} | {{$paifu.type_string}} | {{$paifu.url}}
 {{$paifu.rank}}位{{foreach $paifu.un as $index=>$user}}{{if $user}} {{'',$score=$paifu.sc[$index * 2 + 1]}}{{$user}}({{$score>=0?"+":""}}{{$score}}{{if $paifu.sc.length>8}},{{$paifu.sc[$index * 2+ 8]}}枚{{/if}}){{/if}}{{/foreach}}`,
 });

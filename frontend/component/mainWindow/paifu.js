@@ -4,7 +4,7 @@
 define(['Vue'], function (Vue) {
 	let paifu_user_component= {
 		template:`
-			<span class="user">{{user}}<span class="ten">({{formattedScore}}<template v-if="mai">,{{mai}}枚</template>)</span></span>
+			<span role="user">{{user}}<span role="ten">({{formattedScore}}<template v-if="mai">,{{mai}}枚</template>)</span></span>
 		`,
 		props:[
 			'user','score','mai'
@@ -19,24 +19,25 @@ define(['Vue'], function (Vue) {
 	return {
 		template:`
 		<li :class="{selected:paifu.selected}" @click="select" @selectstart="selectStart" @contextmenu="contextMenu">
-			<span class="date">
-				<i class="year">{{paifu.date.substr(0,5)}}</i>
-				<i>{{paifu.date.substr(5)}}</i>
+			<span role="date">
+				<i role="year">{{paifu.date.substr(0,5)}}</i><i role="month-day">{{paifu.date.substr(5)}}</i>
 			</span>
-			<span class="delimiter">&nbsp;|&nbsp;</span>
-			<span class="type">{{paifu.type_string}}</span>
-			<span class="delimiter">&nbsp;|&nbsp;</span>
-			<span class="url">{{paifu.url}}</span>
-			<span class="line_break"><br /></span>
-			<span class="rank">{{paifu.rank}}位</span>
+			<span role="delimiter"> | </span>
+			<span role="type">{{paifu.type_string}}</span>
+			<span role="delimiter"> | </span>
+			<span role="url">{{paifu.url}}</span>
+			<span role="line_break"><br /></span>
+			<span role="rank">{{paifu.rank}}位</span>
 			<template v-for="(user,user_index) in paifu.un" v-if="user">
-			<span class="delimiter">&nbsp;</span>
+			<span role="delimiter">&nbsp;</span>
 			<paifu-user :score="paifu.sc[user_index*2+1]" :user="user" :mai="paifu.sc.length>8?paifu.sc[user_index * 2+ 8]:false"></paifu-user>
 			</template>
+			
+			<i v-if="paifu.comment" role="comment" :class="{'fa fa-comment':!editMode,'text-comment':editMode}" :title="editMode?'':paifu.comment">{{editMode?paifu.comment:''}}</i>
 		</li>
 		`,
 		props:[
-			'paifu','index','shiftHold'
+			'paifu','index','shiftHold','editMode'
 		],
 		methods:{
 			select:function (ev) {

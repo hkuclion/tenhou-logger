@@ -17,21 +17,21 @@ input[type=password]{ font: menu; font-size:16px; }
 
 .paifu-list ul{ margin: 0; padding: 0; list-style-type: none; }
 .paifu-list ul li { border-width: 1px; border-style: solid; border-color: #fff #f0f0f0 #f0f0f0 #fff; margin: 8px; padding: 5px; background: #fafafa; position: relative; }
+.paifu-list ul li::after{ content:''; display: block; clear: both; }
 .paifu-list ul li.active,
 .paifu-list ul li.selected { border-color: #e8e8e8 #fff #fff #e8e8e8; background: #e0e0e0; z-index: 21 }
 .paifu-list ul li.active { background: #eeddaa; }
 .paifu-list ul li span { display: inline-block; }
-.paifu-list ul li span.line_break { display: block; height: 0; overflow: hidden; }
-.paifu-list ul li .delimiter { min-width: 0.5em; text-align: center; }
-.paifu-list ul li .date { color: #066; }
-.paifu-list ul li .date i { font-style: normal; }
-.paifu-list ul li .type { color: #333; width: 8em; }
-.paifu-list ul li .url { color: #36C; }
-.paifu-list ul li .rank { /*width:13em;*/ text-align: right; }
-.paifu-list ul li .ten { color: #aaa; }
-.paifu-list ul li .date,
-.paifu-list ul li .type,
-.paifu-list ul li .user{ white-space: nowrap; word-break: keep-all; }
+.paifu-list ul li [role=line_break] { display: block; height: 0; overflow: hidden; }
+.paifu-list ul li [role=delimiter] { min-width: 0.5em; text-align: center; }
+.paifu-list ul li [role=date] { color: #066; }
+.paifu-list ul li [role=date] i { font-style: normal; }
+.paifu-list ul li [role=type] { color: #333; width: 8em; }
+.paifu-list ul li [role=url] { color: #36C; }
+.paifu-list ul li [role=rank] { /*width:13em;*/ text-align: right; }
+.paifu-list ul li [role=ten] { color: #aaa; }
+.paifu-list ul li [role=comment]{ float:right; }
+.paifu-list ul li .text-comment{ background: #eee; }
 
 .paifu-list .search{}
 .paifu-list .search [role]{ cursor: pointer; }
@@ -50,3 +50,4 @@ input[type=password]{ font: menu; font-size:16px; }
 .button { line-height: 1.25; padding: 0 0.5em; -webkit-appearance: button; -moz-appearance: button; appearance: button; cursor: default; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 #login::after{content:'登录';}
 #register::after { content: '注册'; }
+.laypage_main input[type=number]{ padding-right: 0;}

@@ -158,11 +158,14 @@ define(['jquery','./dialog_util','jqueryui','css!./dialog-black.css'],function($
 				options = {title:options};
 			}
 
-			let default_value = 'value' in options ? `value ="${HKUC_DIALOG_UTIL.html_encode(options.value)}"` : '';
+			let default_value = HKUC_DIALOG_UTIL.html_encode(options.value);
 
 			options = Object.assign({
 				content:message + '<form class="hkuc_dialog_prompt">' +
-				`<input type="text" name="prompt[value]" ${default_value} />` +
+				(options.multiline ?
+					`<textarea rows="5" cols="40" name="prompt[value]">${default_value}</textarea>`:
+					`<input type="text" name="prompt[value]" ${'value' in options?'value="'+default_value+'"':''} />`
+				) +
 				'</form>',
 				buttons:[
 					{
