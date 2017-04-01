@@ -12,8 +12,12 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 		}
 
 		constructor(data) {
-			Object.assign(this,data);
+			this.setData(data);
 			this.selected=false;
+		}
+
+		setData(data){
+			Object.assign(this, data);
 		}
 
 		get type_string(){

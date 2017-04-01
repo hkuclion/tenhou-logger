@@ -60,6 +60,8 @@ function auto_login_ajax(ajax_options){
 							let ajax = new Ajax(ajax_options);
 							ajax.then((response_data) => {
 								resolve(response_data);
+							},(error)=>{
+								reject(extractError(error));
 							})
 						}
 					});
@@ -110,6 +112,7 @@ ipcMain.on('SERIAL_CALL', (ev, serial, type, data) => {
 			},(error)=>{
 				ev.sender.send(`SERIAL_CALL_${serial}`, 'error', error);
 			});
+			break;
 		}
 	}
 });

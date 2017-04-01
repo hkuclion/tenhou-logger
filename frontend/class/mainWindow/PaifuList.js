@@ -105,7 +105,10 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 					}
 				},
 				{
+					id:'edit_separator',
 					type:'separator',
+					enabled:false,
+					visible:false,
 				},
 				{
 					label:'编辑注释',
@@ -171,6 +174,12 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				this.contextmenu_items['edit_comment'].visible = !!(this.source == 'remote' && this.edit_mode === true && selectedPaifus.length == 1 && selectedPaifus[0].tcomment_id);
 				this.contextmenu_items['add_comment'].visible = this.source == 'remote' && this.edit_mode===true && selectedPaifus.length == 1 && !selectedPaifus[0].tcomment_id;
 				this.contextmenu_items['correct_paifu'].visible = this.source == 'remote' && this.edit_mode === true && selectedPaifus.filter(paifu=>paifu.rank==0).length>0;
+
+				this.contextmenu_items['edit_separator'].visible =
+					this.contextmenu_items['delete_comment'].visible ||
+					this.contextmenu_items['edit_comment'].visible ||
+					this.contextmenu_items['add_comment'].visible ||
+					this.contextmenu_items['correct_paifu'].visible;
 
 				this.contextmenu.popup(
 					ev.pageX,
@@ -244,14 +253,16 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				let result = await SerialCall.call('ajax', {
 					url:`${Setting.get('server')}/Tlog/ajax_comment_add.html`,
 					method:'POST',
-					data:{log_id:paifu.id, comment:Base64.encode(value)},
+					data:{log_id:paifu.id, comment:Base64.encode(encodeURIComponent(value))},
 				});
 
 				if (result.result == 'success') {
 					info_dialog.close();
 					paifu_comment_dialog.close();
-					paifu.tcomment_id = result.data;
-					paifu.comment = value;
+					paifu.setData({
+						tcomment_id:result.data,
+						comment:value
+					});
 					HKUCDialog.alert(result.message);
 				}
 				else {
@@ -277,13 +288,15 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				let result = await SerialCall.call('ajax', {
 					url:`${Setting.get('server')}/Tlog/ajax_comment_edit.html`,
 					method:'POST',
-					data:{log_id:paifu.id,comment:Base64.encode(value)},
+					data:{log_id:paifu.id,comment:Base64.encode(encodeURIComponent(value))},
 				});
 
 				if (result.result == 'success') {
 					info_dialog.close();
 					paifu_comment_dialog.close();
-					paifu.comment = value;
+					paifu.setData({
+						comment:value
+					});
 					HKUCDialog.alert(result.message);
 				}
 				else{
@@ -308,8 +321,10 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 
 					if (result.result == 'success') {
 						info_dialog.close();
-						paifu.comment = null;
-						paifu.tcomment_id = 0;
+						paifu.setData({
+							tcomment_id:0,
+							comment:null
+						});
 						HKUCDialog.alert(result.message);
 					}
 					else {
@@ -319,10 +334,64 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				});
 		}
 
-		addPaifuJson(){
+		async addPaifuJson(){
 			let paifus = this.getSelectedPaifus().filter(paifu => paifu.rank == 0);
 
+			let info_dialog = HKUCDialog.alert('牌谱修正中，请稍候', {modal:true, persist:true});
+			let recent_results = [];
+			let success_count = 0;
 
+			for (let i = 0; i < paifus.length; i++) {
+				recent_results.push(`正在获取第 ${i + 1}/${paifus.length} 条牌谱的数据…`);
+				if (recent_results.length > 5) recent_results.shift();
+				info_dialog.option('content', '牌谱修正中，请稍候<br />' + recent_results.join('<br />'));
+				let json = await SerialCall.call('ajax', {
+					url:`http://tenhou.net/5/mjlog2json.cgi?${paifus[i].file}`,
+					method:'GET',
+					referer:paifus[i].url,
+					dataType:'text',
+				});
+				let last_result = recent_results.pop();
+
+				if (json) {
+					last_result = `第 ${i + 1}/${paifus.length} 条牌谱获取数据成功，正在提交数据…`;
+				}
+				else {
+					last_result = `第 ${i + 1}/${paifus.length} 条牌谱获取数据失败`;
+				}
+				recent_results.push(last_result);
+				info_dialog.option('content', '牌谱修正中，请稍候<br />' + recent_results.join('<br />'));
+
+				if(!json)continue;
+
+				let result = await SerialCall.call('ajax', {
+					url:`${Setting.get('server')}/Tlog/ajax_json_add.html`,
+					method:'POST',
+					data:{
+						log_id:paifus[i].id,
+						json:Base64.encode(encodeURIComponent(JSON.stringify(eval('(' + json + ')')))),
+						correct:true,
+					},
+				});
+				last_result = recent_results.pop();
+
+				if (result.result == 'success') {
+					success_count += 1;
+					last_result += '成功';
+					paifus[i].setData(result.data.Tlog);
+				}
+				else {
+					last_result += `失败:${result.data}`;
+				}
+				console.log(result);
+
+				recent_results.push(last_result);
+				info_dialog.option('content', '牌谱修正中，请稍候<br />' + recent_results.join('<br />'));
+			}
+
+			HKUCDialog.alert(`牌谱修正中完毕，成功修正了${success_count}/${paifus.length}条牌谱`).on('close', () => {
+				info_dialog.close();
+			});
 		}
 
 		getLocal(){
@@ -403,7 +472,9 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				if(this.page){
 					this.page.page = result.data.page.Tlog.page;
 				}
+
 				this.page = result.data.page.Tlog;
+				console.log(this.page)
 				this.search = Object.assign({}, default_search,result.data.search);
 			}
 			else {

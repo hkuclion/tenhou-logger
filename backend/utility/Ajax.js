@@ -10,6 +10,7 @@ let default_options = {
 	context:undefined,
 	dataType:'json',
 	statusCode:{},
+	referer:null,
 };
 
 let session = Session.fromPartition('persist:tenhou-logger');
@@ -19,11 +20,11 @@ class Ajax{
 		this.options = Object.assign({}, default_options, options);
 		let url_info = Url.parse(this.options.url);
 
-		remote_console('ajax', this.options.url);
-
 		return new Promise((resolve, reject) => {
 			session.cookies.get({domain:url_info.domain}, (error, cookies) => {
-				this.request = Net.request(Object.assign({
+				let netModule = this.options.referer? require('http'): Net;
+
+				this.request = netModule.request(Object.assign({
 					method:this.options.method,
 					session,
 				}, url_info));
@@ -35,6 +36,7 @@ class Ajax{
 					}
 					this.request.setHeader('Cookie', QS.stringify(cookie_values));
 				}
+
 				let data = this.options.data;
 				if (data) {
 					this.request.setHeader('Content-Type', this.options.contentType);
@@ -42,12 +44,25 @@ class Ajax{
 						data = QS.stringify(data);
 					}
 				}
-				this.request.end(data);
+				let referer = this.options.referer;
+				if (referer) {
+					this.request.setHeader('Referer', referer);
+				}
 
 				this.request.on('response', (response) => {
 					response.on('error', (e) => {
 						reject(e);
 					});
+
+					if(this.options.referer) {
+						response.data = [];
+						response.on('data', (chunk) => {
+							response.data.push(chunk);
+						});
+						response.on('end', () => {
+							response.emit('close');
+						});
+					}
 
 					response.on('close', () => {
 						let responseText = '';
@@ -61,7 +76,7 @@ class Ajax{
 						}
 
 						let response_data = responseText;
-						remote_console('ajax_responded', this.options.url);
+
 						if (this.options.dataType == 'json') {
 							try {
 								response_data = JSON.parse(response_data);
@@ -75,8 +90,14 @@ class Ajax{
 						resolve(response_data);
 					});
 				});
+
+				this.request.end(data);
 			});
 		});
+	}
+
+	abort(){
+		this.request && this.request.abort();
 	}
 }
 
