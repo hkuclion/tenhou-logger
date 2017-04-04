@@ -14,7 +14,7 @@ define(['Vue','css!lib/layPage/laypage.css'], function (Vue) {
 			<!-- Groups -->
 			<template v-for="index in dict_end-dict_start+1">
 				<span v-if="index+dict_start-1==curr" :class="className+'-curr'">{{index+dict_start-1}}</span>
-				<a v-else :title="index" @click="jumpToPage(index+dict_start-1)" :class="className" :page="index+dict_start-1">{{index+dict_start-1}}</a>
+				<a v-else :title="index+dict_start-1" @click="jumpToPage(index+dict_start-1)" :class="className" :page="index+dict_start-1">{{index+dict_start-1}}</a>
 			</template>
 			<!-- GroupsEnd -->
 			<!-- Last -->

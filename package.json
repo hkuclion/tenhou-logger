@@ -1,7 +1,7 @@
 {
   "name": "tenhou-logger",
   "productName": "TenhouLogger",
-  "version": "1.0.0",
+  "version": "v1.0.0-beta",
   "description": "TenhouLogger",
   "main": "backend/main.js",
   "licence": "MIT",

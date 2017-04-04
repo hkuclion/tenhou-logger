@@ -1,10 +1,12 @@
 /**
  * Created by hkuclion on 2017/3/17.
  */
-define(['lib/hkuc/template'],function(HKUCTemplate){
+define(['lib/hkuc/dialog','lib/hkuc/template'],function(HKUCDialog,HKUCTemplate){
 	let paifu_text_template= `{{$paifu.date}} | {{$helpers.typeToString($paifu.type)}} | {{$paifu.url}}
 {{$paifu.rank}}位{{foreach $paifu.un as $index=>$user}}{{if $user}} {{'',$score=$paifu.sc[$index * 2 + 1]}}{{$user}}({{$score>=0?"+":""}}{{$score}}{{if $paifu.sc.length>8}},{{$paifu.sc[$index * 2+ 8]}}枚{{/if}}){{/if}}{{/foreach}}`;
 	HKUCTemplate.compile('paifu_text', paifu_text_template, {compress:false, escape:false});
+
+	const {ipcRenderer} = require('electron');
 
 	class Paifu {
 		get componentName() {
@@ -33,6 +35,16 @@ define(['lib/hkuc/template'],function(HKUCTemplate){
 				return this.log_str;
 			}
 			return HKUCTemplate.render('paifu_text',{$paifu:this});
+		}
+
+		review(){
+			let try_review = ipcRenderer.sendSync('REVIEW_PAIFU',this.url,false);
+			if(!try_review){
+				HKUCDialog.confirm('当前有牌谱正在重放中，要覆盖它吗？')
+					.on('ok',()=>{
+						ipcRenderer.sendSync('REVIEW_PAIFU', this.url, true);
+					});
+			}
 		}
 	}
 
