@@ -105,6 +105,13 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 					}
 				},
 				{
+					label:'重放选中牌谱',
+					id:'review_paifu',
+					click:() => {
+						this.reviewSelectedPaifu();
+					}
+				},
+				{
 					id:'edit_separator',
 					type:'separator',
 					enabled:false,
@@ -167,8 +174,9 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 
 				let selectedPaifus = this.getSelectedPaifus();
 
-				this.contextmenu_items['copy_paifu'].visible =
-					this.contextmenu_items['upload_paifu'].visible = !!selectedPaifus.length;
+				this.contextmenu_items['copy_paifu'].visible = !!selectedPaifus.length;
+				this.contextmenu_items['upload_paifu'].visible = !!selectedPaifus.length && this.source=='local';
+				this.contextmenu_items['review_paifu'].visible = selectedPaifus.length == 1;
 
 				this.contextmenu_items['delete_comment'].visible =
 				this.contextmenu_items['edit_comment'].visible = !!(this.source == 'remote' && this.edit_mode === true && selectedPaifus.length == 1 && selectedPaifus[0].tcomment_id);
@@ -197,16 +205,34 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 			clipboard.writeText(paifuTexts.join('\n'));
 		}
 
+		reviewSelectedPaifu(){
+			this.getSelectedPaifus().shift().review();
+		}
+
 		async uploadSelectedPaifu() {
 			let logstrs = [];
 			for (let paifu of this.getSelectedPaifus()) {
 				logstrs.push(paifu.toString('logstr'));
 			}
 			logstrs = logstrs.reverse();
-
-			let info_dialog = HKUCDialog.alert('牌谱上传中，请稍候', {modal:true, persist:true});
 			let recent_results = [];
 			let success_count = 0;
+			let cancel_flag = false;
+
+			let info_dialog = HKUCDialog.alert('牌谱上传中，请稍候', {
+				modal:true,
+				buttons:[
+					{
+						'text':'取消',
+						'click':function () {
+							HKUCDialog.confirm('确定要取消牌谱上传吗？')
+								.on('ok',(ev)=>{
+									cancel_flag=true;
+								});
+						},
+					},
+				],
+			});
 
 			for (let i = 0; i < logstrs.length; i++) {
 				recent_results.push(`正在上传第 ${i + 1}/${logstrs.length} 条牌谱…`);
@@ -217,6 +243,14 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 					method:'POST',
 					data:{logstr:Base64.encode(logstrs[i])},
 				});
+
+				if(result.result == 'login'){
+					HKUCDialog.alert(`请登录`).on('close', () => {
+						info_dialog.close();
+					});
+					return;
+				}
+
 				let last_result = recent_results.pop();
 
 				if (result.result == 'success') {
@@ -228,6 +262,8 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				}
 				recent_results.push(last_result);
 				info_dialog.option('content', '牌谱上传中，请稍候<br />' + recent_results.join('<br />'));
+
+				if (cancel_flag)break;
 			}
 
 			HKUCDialog.alert(`牌谱上传完毕，成功上传了${success_count}/${logstrs.length}条牌谱`).on('close', () => {
@@ -337,9 +373,24 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 		async addPaifuJson(){
 			let paifus = this.getSelectedPaifus().filter(paifu => paifu.rank == 0);
 
-			let info_dialog = HKUCDialog.alert('牌谱修正中，请稍候', {modal:true, persist:true});
 			let recent_results = [];
 			let success_count = 0;
+			let cancel_flag = false;
+
+			let info_dialog = HKUCDialog.alert('牌谱修正中，请稍候', {
+				modal:true,
+				buttons:[
+					{
+						'text':'取消',
+						'click':function () {
+							HKUCDialog.confirm('确定要取消牌谱上传吗？')
+								.on('ok', (ev) => {
+									cancel_flag = true;
+								});
+						},
+					},
+				]
+			});
 
 			for (let i = 0; i < paifus.length; i++) {
 				recent_results.push(`正在获取第 ${i + 1}/${paifus.length} 条牌谱的数据…`);
@@ -373,6 +424,14 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 						correct:true,
 					},
 				});
+
+				if (result.result == 'login') {
+					HKUCDialog.alert(`请登录`).on('close', () => {
+						info_dialog.close();
+					});
+					return;
+				}
+
 				last_result = recent_results.pop();
 
 				if (result.result == 'success') {
@@ -383,10 +442,11 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				else {
 					last_result += `失败:${result.data}`;
 				}
-				console.log(result);
 
 				recent_results.push(last_result);
 				info_dialog.option('content', '牌谱修正中，请稍候<br />' + recent_results.join('<br />'));
+
+				if(cancel_flag)break;
 			}
 
 			HKUCDialog.alert(`牌谱修正中完毕，成功修正了${success_count}/${paifus.length}条牌谱`).on('close', () => {
@@ -474,7 +534,7 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				}
 
 				this.page = result.data.page.Tlog;
-				console.log(this.page)
+
 				this.search = Object.assign({}, default_search,result.data.search);
 			}
 			else {

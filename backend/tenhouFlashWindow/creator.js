@@ -29,7 +29,7 @@ module.exports = function () {
 	windowState.manage(window);
 
 	window.setMenu(null);
-	
+
 	window.loadURL('http://tenhou.net/0/',{
 		postData:[{
 			type: 'rawData',

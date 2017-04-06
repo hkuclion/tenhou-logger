@@ -28,6 +28,31 @@ let menuItem_Paifu = new MenuItem({
 			accelerator:'Ctrl+L'
 		},
 		{
+			label:'回放牌谱...',
+			click:function () {
+				WindowManager.getWindow('main').webContents.executeJavaScript(`
+					requirejs(['lib/hkuc/dialog'],function(HKUCDialog){
+						let prompt_dialog = HKUCDialog.prompt('请输入牌谱地址').on('ok',(ev,url)=>{
+							let matched;
+							if(!(matched=url.match(/^http:\\/\\/tenhou\\.net\\/0\\/\\?log=(\\d{10}gm-([0-f]{4})-[0-f]+-(?:x[0-f]{12}|[0-f]{8})\\&tw=\\d)$/i))){
+								if(url.match(/^http:\\/\\/tenhou.net\\/0\\/\\?wg=[0-f]+(&tw=\\d)?/i)){
+									require('electron').ipcRenderer.send('WATCH_GAME',url);
+									return;
+								}
+								
+								HKUCDialog.alert('牌谱地址格式不正确');
+								return false; 
+							}
+
+							require('electron').ipcRenderer.send('REVIEW_PAIFU',url);
+							return;
+						})
+					});
+				`);
+			},
+			accelerator:'Ctrl+O'
+		},
+		{
 			type:'separator',
 		},
 		{
@@ -85,13 +110,13 @@ let menuItem_Option = new MenuItem({
 	label:'选项 (&C)',
 	type:'submenu',
 	submenu:[
-		{
+		/*{
 			label:'首选项 (&S)',
 			click:function () {
 				WindowManager.getWindow('config');
 			},
 		},
-		/*{
+		{
 			label:'清除配置',
 			click:function(){
 				require('electron-json-config').purge();
@@ -126,7 +151,7 @@ let menuItem_Tenhou = new MenuItem({
 });
 
 mainMenu.append(menuItem_Paifu);
-mainMenu.append(menuItem_View);
+//mainMenu.append(menuItem_View);
 mainMenu.append(menuItem_Option);
 mainMenu.append(menuItem_Tenhou);
 

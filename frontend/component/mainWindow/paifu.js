@@ -18,7 +18,7 @@ define(['Vue'], function (Vue) {
 
 	return {
 		template:`
-		<li :class="{selected:paifu.selected}" @click="select" @selectstart="selectStart" @contextmenu="contextMenu">
+		<li :class="{selected:paifu.selected}" @dblclick.prevent="review" @click="select" @selectstart="selectStart" @contextmenu="contextMenu">
 			<span role="date">
 				<i role="year">{{paifu.date.substr(0,5)}}</i><i role="month-day">{{paifu.date.substr(5)}}</i>
 			</span>
@@ -53,6 +53,9 @@ define(['Vue'], function (Vue) {
 			},
 			contextMenu:function(ev){
 				this.$emit('contextmenu',ev);
+			},
+			review:function(){
+				this.paifu.review();
 			}
 		},
 		components:{

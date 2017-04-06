@@ -1,12 +1,12 @@
-define(['jquery', 'lib/hkuc/template', 'template/configWindow','model/Setting','lib/hkuc/dialog_util'],function($,HKUCTemplate,template,Setting,DialogUtility){
+define(['jquery','model/Setting','lib/hkuc/dialog_util'],function($,Setting, DialogUtility){
 	HKUCTemplate.addSource(template);
 
-	return class Form{
+	return class Container{
 		constructor(){
-			this.createView();
+
 		}
 
-		createView(){
+		/*createView(){
 			this.$view = $(HKUCTemplate.render('form', {
 				$form_fields:{
 					'server':{
@@ -33,6 +33,6 @@ define(['jquery', 'lib/hkuc/template', 'template/configWindow','model/Setting','
 				window.close();
 				return false;
 			})
-		}
+		}*/
 	}
 });

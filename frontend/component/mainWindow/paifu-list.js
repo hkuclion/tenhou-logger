@@ -50,7 +50,7 @@ define(['Vue'], function (Vue) {
 			},
 			requestPage:function(page){
 				this.PaifuList.setPage(page);
-			}
+			},
 		}
 	}
 });
