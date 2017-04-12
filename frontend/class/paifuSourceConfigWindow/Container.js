@@ -34,7 +34,8 @@ define(['class/Setting', 'lib/hkuc/dialog'],function(Setting,HKUCDialog){
 					type:'radio',
 					label:'类型',
 					options:{
-						'local':'本程序内置Flash',
+						'localFlash':'本程序内置Flash版',
+						'localStorage':'本程序内置Web版',
 						'flash':'Flash版',
 						'win':'Win版'
 					}
@@ -74,8 +75,11 @@ define(['class/Setting', 'lib/hkuc/dialog'],function(Setting,HKUCDialog){
 					return HKUCDialog.alert('请先选择来源类型', {title:'提示'});
 				}
 
-				if (type == 'local') {
-					file_selected('本程序内置');
+				if (type == 'localFlash') {
+					file_selected('本程序内置Flash版');
+				}
+				else if (type == 'localStorage') {
+					file_selected('本程序内置Web版');
 				}
 				else if (type == 'flash') {
 					let shared_object_path = path.resolve(remote.app.getPath('appData'), 'Macromedia', 'Flash Player', '#SharedObjects');

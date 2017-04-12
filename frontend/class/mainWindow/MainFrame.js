@@ -1,9 +1,7 @@
 /**
  * Created by hkuclion on 2017/3/17.
  */
-define(['class/Setting'],function(Setting){
-	let ipcRenderer = require('electron').ipcRenderer;
-
+define(['class/Setting','class/SerialCall'],function(Setting, SerialCall){
 	return class MainFrame{
 		get componentName(){
 			return 'main-frame';
@@ -17,7 +15,7 @@ define(['class/Setting'],function(Setting){
 		}
 
 		bindEvent(){
-			ipcRenderer.on('GET_PAIFU', (event, source) => {
+			SerialCall.on('GET_PAIFU', (event, source) => {
 				requirejs(['class/mainWindow/PaifuList'], (PaifuList) => {
 					if (!(this.content instanceof PaifuList)) {
 						this.content = new PaifuList();
@@ -33,7 +31,7 @@ define(['class/Setting'],function(Setting){
 				});
 			});
 
-			ipcRenderer.on('PAIFU_EDIT_MODE', (event,mode) => {
+			SerialCall.on('PAIFU_EDIT_MODE', (event,mode) => {
 				this.paifu_edit_mode = mode;
 				requirejs(['class/mainWindow/PaifuList'], (PaifuList) => {
 					if (this.content instanceof PaifuList) {

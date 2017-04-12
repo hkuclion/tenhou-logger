@@ -6,7 +6,7 @@ define(['class/SerialCall','lib/hkuc/dialog'],function(SerialCall,HKUCDialog){
 		constructor(){
 			this.user=null;
 
-			SerialCall.call('user').then((user) => {
+			SerialCall.call('GET_USER').then((user) => {
 				this.setUser(user);
 			})
 		}
@@ -18,7 +18,7 @@ define(['class/SerialCall','lib/hkuc/dialog'],function(SerialCall,HKUCDialog){
 		logout(){
 			HKUCDialog.confirm('确认要退出登录吗？').on('ok',()=>{
 				let info_dialog = HKUCDialog.alert('数据提交中，请稍候…', {title:'请等待', persist:true, modal:true});
-				SerialCall.call('logout').then((data) => {
+				SerialCall.call('LOGOUT').then((data) => {
 					info_dialog.close();
 
 					if (data.result == 'success') {
@@ -44,7 +44,7 @@ define(['class/SerialCall','lib/hkuc/dialog'],function(SerialCall,HKUCDialog){
 					data.User.password = RSA.encode(data.User.password);
 
 					let info_dialog = HKUCDialog.alert('数据提交中，请稍候…', {title:'请等待', persist:true, modal:true});
-					SerialCall.call('login', data).then((data) => {
+					SerialCall.call('LOGIN', data).then((data) => {
 						info_dialog.close();
 
 						this.setUser(data.data);

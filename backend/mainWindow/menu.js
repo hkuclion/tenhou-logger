@@ -1,7 +1,7 @@
 const {app, Menu, MenuItem,dialog} = require('electron');
 const WindowManager=require('../utility/WindowManager');
 const Operation = require('./Operation');
-const SerialCallback = require('./SerialCallback');
+let SerialCall = null;
 const ElectronConfig = require('electron-json-config');
 
 let mainMenu = new Menu();
@@ -12,31 +12,28 @@ let menuItem_Paifu = new MenuItem({
 		{
 			label:'获取远程',
 			click:function () {
-				WindowManager.getWindow('main').webContents.send(
-					'GET_PAIFU','remote'
-				);
+				SerialCall('GET_PAIFU','remote');
 			},
 			accelerator:'Ctrl+R'
 		},
 		{
 			label:'查看本地',
 			click:function() {
-				WindowManager.getWindow('main').webContents.send(
-					'GET_PAIFU','local'
-				);
+				SerialCall('GET_PAIFU','local');
 			},
 			accelerator:'Ctrl+L'
 		},
 		{
 			label:'回放牌谱...',
 			click:function () {
-				WindowManager.getWindow('main').webContents.executeJavaScript(`
-					requirejs(['lib/hkuc/dialog'],function(HKUCDialog){
+				SerialCall('REVIEW_PAIFU');
+				/*WindowManager.getWindow('main').webContents.executeJavaScript(`
+					requirejs(['lib/hkuc/dialog','lib/class/SerialCall'],function(HKUCDialog,SerialCall){
 						let prompt_dialog = HKUCDialog.prompt('请输入牌谱地址').on('ok',(ev,url)=>{
 							let matched;
 							if(!(matched=url.match(/^http:\\/\\/tenhou\\.net\\/0\\/\\?log=(\\d{10}gm-([0-f]{4})-[0-f]+-(?:x[0-f]{12}|[0-f]{8})\\&tw=\\d)$/i))){
 								if(url.match(/^http:\\/\\/tenhou.net\\/0\\/\\?wg=[0-f]+(&tw=\\d)?/i)){
-									require('electron').ipcRenderer.send('WATCH_GAME',url);
+									SerialCall.call('WATCH_GAME',url);
 									return;
 								}
 								
@@ -44,11 +41,11 @@ let menuItem_Paifu = new MenuItem({
 								return false; 
 							}
 
-							require('electron').ipcRenderer.send('REVIEW_PAIFU',url);
+							SerialCall.call('REVIEW_PAIFU',url);
 							return;
 						})
 					});
-				`);
+				`);*/
 			},
 			accelerator:'Ctrl+O'
 		},
@@ -59,11 +56,9 @@ let menuItem_Paifu = new MenuItem({
 			label:'编辑模式',
 			type:'checkbox',
 			click:function(menuItem){
-				Operation.set_paifu_edit_mode(menuItem.checked);
+				ElectronConfig.set('paifu_edit_mode', menuItem.checked);
 
-				WindowManager.getWindow('main').webContents.send(
-					'PAIFU_EDIT_MODE', menuItem.checked
-				);
+				SerialCall('PAIFU_EDIT_MODE', menuItem.checked);
 			},
 			checked:ElectronConfig.get('paifu_edit_mode',false)
 		},
@@ -151,10 +146,13 @@ let menuItem_Tenhou = new MenuItem({
 });
 
 mainMenu.append(menuItem_Paifu);
-//mainMenu.append(menuItem_View);
+mainMenu.append(menuItem_View);
 mainMenu.append(menuItem_Option);
 mainMenu.append(menuItem_Tenhou);
 
 module.exports = function(window){
+	SerialCall = function (type, ...data) {
+		window.webContents.send(type, ...data);
+	};
 	window.setMenu(mainMenu);
 };

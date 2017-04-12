@@ -1,10 +1,22 @@
 /**
  * Created by hkuclion on 2017/3/17.
  */
-define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/dialog','lib/Base64/Base64'],function(Paifu,Setting, SerialCall,HKUCDialog, Base64){
+define([
+	'class/mainWindow/Paifu',
+	'class/Setting',
+	'class/SerialCall',
+	'lib/hkuc/dialog',
+	'lib/Base64/Base64'
+],function(
+	Paifu,
+	Setting,
+	SerialCall,
+	HKUCDialog,
+	Base64
+){
 	const electron = require('electron');
 	const {Menu}=electron.remote;
-	const {clipboard, ipcRenderer} = electron;
+	const {clipboard} = electron;
 
 	const default_search={
 		start_date:null,
@@ -238,8 +250,8 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				recent_results.push(`正在上传第 ${i + 1}/${logstrs.length} 条牌谱…`);
 				if (recent_results.length > 5) recent_results.shift();
 				info_dialog.option('content', '牌谱上传中，请稍候<br />' + recent_results.join('<br />'));
-				let result = await SerialCall.call('ajax', {
-					url:`${Setting.get('server')}/Tlog/ajax_set.html`,
+				let result = await SerialCall.call('SERVER_AJAX', {
+					url:'/Tlog/ajax_set.html',
 					method:'POST',
 					data:{logstr:Base64.encode(logstrs[i])},
 				});
@@ -286,8 +298,8 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				}
 			).on('ok', async (ev, value) => {
 				let info_dialog = HKUCDialog.alert('提交数据中，请稍候', {modal:true, persist:true});
-				let result = await SerialCall.call('ajax', {
-					url:`${Setting.get('server')}/Tlog/ajax_comment_add.html`,
+				let result = await SerialCall.call('SERVER_AJAX', {
+					url:'/Tlog/ajax_comment_add.html',
 					method:'POST',
 					data:{log_id:paifu.id, comment:Base64.encode(encodeURIComponent(value))},
 				});
@@ -321,8 +333,8 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				}
 			).on('ok',async (ev,value)=>{
 				let info_dialog = HKUCDialog.alert('提交数据中，请稍候', {modal:true, persist:true});
-				let result = await SerialCall.call('ajax', {
-					url:`${Setting.get('server')}/Tlog/ajax_comment_edit.html`,
+				let result = await SerialCall.call('SERVER_AJAX', {
+					url:'/Tlog/ajax_comment_edit.html',
 					method:'POST',
 					data:{log_id:paifu.id,comment:Base64.encode(encodeURIComponent(value))},
 				});
@@ -349,8 +361,8 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 			let confirm_dialog = HKUCDialog.confirm('真的要删除该注释吗？')
 				.on('ok', async (ev)=>{
 					let info_dialog = HKUCDialog.alert('提交数据中，请稍候', {modal:true, persist:true});
-					let result = await SerialCall.call('ajax', {
-						url:`${Setting.get('server')}/Tlog/ajax_comment_delete.html`,
+					let result = await SerialCall.call('SERVER_AJAX', {
+						url:'/Tlog/ajax_comment_delete.html',
 						method:'POST',
 						data:{log_id:paifu.id},
 					});
@@ -396,7 +408,7 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				recent_results.push(`正在获取第 ${i + 1}/${paifus.length} 条牌谱的数据…`);
 				if (recent_results.length > 5) recent_results.shift();
 				info_dialog.option('content', '牌谱修正中，请稍候<br />' + recent_results.join('<br />'));
-				let json = await SerialCall.call('ajax', {
+				let json = await SerialCall.call('AJAX', {
 					url:`http://tenhou.net/5/mjlog2json.cgi?${paifus[i].file}`,
 					method:'GET',
 					referer:paifus[i].url,
@@ -415,8 +427,8 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 
 				if(!json)continue;
 
-				let result = await SerialCall.call('ajax', {
-					url:`${Setting.get('server')}/Tlog/ajax_json_add.html`,
+				let result = await SerialCall.call('SERVER_AJAX', {
+					url:'/Tlog/ajax_json_add.html',
 					method:'POST',
 					data:{
 						log_id:paifus[i].id,
@@ -454,9 +466,12 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 			});
 		}
 
-		getLocal(){
+		async getLocal(){
 			this.source = 'local';
-			let log_strs = ipcRenderer.sendSync('GET_LOCAL_PAIFU');
+
+			let dialog = HKUCDialog.alert('获取本地数据中……');
+			let log_strs = await SerialCall.call('GET_LOCAL_PAIFU');
+			dialog.close();
 
 			let paifus = [];
 			for(let log_str of log_strs){
@@ -514,8 +529,8 @@ define(['class/mainWindow/Paifu','class/Setting','class/SerialCall','lib/hkuc/di
 				if(data[key])post_data[key]=data[key];
 			}
 
-			let result = await SerialCall.call('ajax', {
-				url:`${Setting.get('server')}/Tlog/ajax_get`,
+			let result = await SerialCall.call('SERVER_AJAX', {
+				url:'/Tlog/ajax_get',
 				method:'POST',
 				data:Object.assign(post_data, {page:this.page ? this.page.page : 1})
 			});
