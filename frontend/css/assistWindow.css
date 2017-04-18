@@ -1,0 +1,21 @@
+body,html{ height:100%; }
+body{ margin: 0; display: flex; flex-direction: column; }
+html,
+textarea,
+input[type=text],
+input[type=password]{ font: menu; font-size:16px; }
+
+#tenhou-game{ padding:10px; }
+.suggestion { padding: 10px; border: 1px dashed lightblue; margin: 10px 0 }
+
+#game-info::before{ content: '对局信息'; }
+#kyoku-info::before{ content: '当前'; }
+#kyoku-tehai::before{ content:'手牌'; }
+.suggestion-syanten::before{ content:'向听数'; }
+#game-info::before,
+#kyoku-info::before,
+#kyoku-tehai::before,
+.suggestion-syanten::before{ font-size:14px; width:4em; display: inline-block; text-align: center; padding: 2px; background: lightpink; border-radius: 4px; margin-right: 1em; }
+span.hai{ display: inline-block; }
+
+.da-suggestion .mo-suggestion{ border: none; display: inline; padding:0; margin:0 }

@@ -1,4 +1,4 @@
-const {BrowserWindow, dialog, app} = require('electron');
+const {BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 const {frontend_path, backend_path} = require('../utility/app_path');

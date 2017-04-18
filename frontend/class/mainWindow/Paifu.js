@@ -28,6 +28,10 @@ define(['lib/hkuc/dialog','lib/hkuc/template','class/SerialCall'],function(HKUCD
 			return new Paifu(parseLogStr(log_str));
 		}
 
+		static typeString(type){
+			return translateType(type,'string');
+		}
+
 		toString(type = 'text') {
 			if (type == 'logstr') {
 				return this.log_str;

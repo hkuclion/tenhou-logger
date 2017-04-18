@@ -1,5 +1,7 @@
 let backupWebSocket = WebSocket;
 
+let ipcRenderer = require('electron').ipcRenderer;
+
 class WrapWebSocket{
 	constructor(...args){
 		this.web_socket = new backupWebSocket(...args);
@@ -37,7 +39,7 @@ class WrapWebSocket{
 			case 'message': {
 				this.callbacks.message = callback;
 				this.bindings.message = (event) => {
-					console.log('RECV',JSON.parse(event.data));
+					ipcRenderer.send('TENHOU_WEB_MESSAGE', event.data);
 					return this.callbacks.message.call(this,event);
 				};
 				this.web_socket.addEventListener(eventName, this.bindings.message, useCapture);

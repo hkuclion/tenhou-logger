@@ -111,12 +111,7 @@ let menuItem_Option = new MenuItem({
 				WindowManager.getWindow('config');
 			},
 		},
-		{
-			label:'清除配置',
-			click:function(){
-				require('electron-json-config').purge();
-			}
-		},*/
+		*/
 		{
 			label:'牌谱来源配置',
 			click:function (item, focusedWindow) {
@@ -140,6 +135,12 @@ let menuItem_Tenhou = new MenuItem({
 			label:'Web版 (&W)',
 			click:function (item, focusedWindow) {
 				WindowManager.getWindow('tenhouWeb');
+			}
+		},
+		{
+			label:'Web版辅助',
+			click:function (item, focusedWindow) {
+				WindowManager.getWindow('assist');
 			}
 		}
 	],
