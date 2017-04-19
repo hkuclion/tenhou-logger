@@ -3,9 +3,15 @@
  */
 define({
 	displayHai(hai){
-		if (Number.isNaN(hai))return null;
-		let type = Math.floor(hai / 9);
-		let value = hai % 9;
+		return this.displayHaiValue(hai >> 2);
+	},
+
+	displayHaiValue(haiValue){
+		if(haiValue<0 || haiValue>=34)return '错';
+
+		if (Number.isNaN(haiValue))return null;
+		let type = Math.floor(haiValue / 9);
+		let value = haiValue % 9;
 
 		let map = [
 			['一', '二', '三', '四', '五', '六', '七', '八', '九'],
@@ -16,7 +22,75 @@ define({
 		return map[type][value];
 	},
 
-	displayHaiValue(haiValue){
-		return this.displayHai(haiValue >> 2);
+	displayYaku(yaku){
+		return [
+// 一飜
+			"門前清自摸和",
+			"立直",
+			"一発",
+			"槍槓",
+			"嶺上開花",
+			"海底摸月",
+			"河底撈魚",
+			"平和",
+			"断幺九",
+			"一盃口",
+			"自風 東",
+			"自風 南",
+			"自風 西",
+			"自風 北",
+			"場風 東",
+			"場風 南",
+			"場風 西",
+			"場風 北",
+			"役牌 白",
+			"役牌 發",
+			"役牌 中",
+
+// 二飜
+			"両立直",
+			"七対子",
+			"混全帯幺九",
+			"一気通貫",
+			"三色同順",
+			"三色同刻",
+			"三槓子",
+			"対々和",
+			"三暗刻",
+			"小三元",
+			"混老頭",
+
+//  三飜
+			"二盃口",
+			"純全帯幺九",
+			"混一色",
+
+//  六飜
+			"清一色",
+
+//  満貫
+			"人和",
+
+//  役満
+			"天和",
+			"地和",
+			"大三元",
+			"四暗刻",
+			"四暗刻単騎",
+			"字一色",
+			"緑一色",
+			"清老頭",
+			"九蓮宝燈",
+			"純正九蓮宝燈",
+			"国士無双",
+			"国士無双１３面",
+			"大四喜",
+			"小四喜",
+			"四槓子",
+
+			"ドラ",
+			"裏ドラ",
+			"赤ドラ",
+		][yaku];
 	}
 });

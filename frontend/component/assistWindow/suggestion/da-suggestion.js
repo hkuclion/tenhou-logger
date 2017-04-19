@@ -7,7 +7,7 @@ define(['Vue', 'component/assistWindow/hai-methods'], function (Vue,HaiMethods) 
 		<div class="suggestion da-suggestion">
 			<div class="suggestion-syanten">{{suggestion.syanten}}</div>
 			<div v-for="da in suggestion.data">
-				打 <span class="hai">{{displayHai(da.hai_value)}}</span>
+				打 <span class="hai">{{displayHaiValue(da.hai_value)}}</span>
 				<mo-suggestion :suggestion="da.mo"></mo-suggestion>
 			</div>
 		</div>

@@ -3,20 +3,22 @@
  */
 define([
 	'class/assistWindow/Syanten',
-	'class/assistWindow/Suggestion/AgariSuggestion',
 	'class/assistWindow/Suggestion/DaSuggestion',
 	'class/assistWindow/Suggestion/TenSuggestion',
 	'class/assistWindow/Suggestion/MoSuggestion',
 	'class/assistWindow/Suggestion/SyantenSuggestion',
 	'class/assistWindow/Suggestion/NakiSuggestion',
+	'class/assistWindow/Result/RyuukyokuResult',
+	'class/assistWindow/Result/AgariResult',
 ],function(
 	Syanten,
-	AgariSuggestion,
 	DaSuggestion,
 	TenSuggestion,
 	MoSuggestion,
 	SyantenSuggestion,
-	NakiSuggestion
+	NakiSuggestion,
+	RyuukyokuResult,
+	AgariResult
 ){
 	const ACTION_PON=1;
 	const ACTION_KAN=1<<1;
@@ -238,10 +240,38 @@ define([
 			this.suggestion = this.analyseNo();
 		}
 
+		end(type,data){
+			switch(type){
+				case 'RYUUKYOKU': {
+					let sc = data.sc.split(',').map(number => parseInt(number));
+					this.result = new RyuukyokuResult(sc);
+					break;
+				}
+				case 'AGARI': {
+					let sc = data.sc.split(',').map(number => parseInt(number));
+					let who = parseInt(data.who);
+					let fromWho = parseInt(data.fromWho);
+					let hai = parseInt(data.machi);
+					let yaku = data.yaku.split(',').map(number => parseInt(number));
+
+					let yakus = new Map();
+					for(let i=0; i<yaku.length; i+=2){
+						yakus.set(yaku[i], yaku[i + 1]);
+					}
+
+					let ten = data.ten.split(',').map(number => parseInt(number));
+
+					this.result = new AgariResult(sc, who, fromWho, hai, yakus, ten,data.yakuman);
+					break;
+				}
+			}
+			this.suggestion = null;
+		}
+
 		analyseDa(source = this.tehais){
 			let current_syanten = new Syanten(source).calc();
 			if (current_syanten === -1) {
-				return new AgariSuggestion();
+				return new SyantenSuggestion(current_syanten);
 			}
 
 			let data = [];
@@ -364,7 +394,7 @@ define([
 						this.tehais.filter(number => (number >> 2) - 1 === hai_value),
 						this.tehais.filter(number => (number >> 2) - 2 === hai_value)
 					];
-					if (min_matched[0].length && mid_matched[1].length) {
+					if (min_matched[0].length && min_matched[1].length) {
 						let matched = [min_matched[0][0], min_matched[1][0]];
 						data.push({
 							type:'CHI',

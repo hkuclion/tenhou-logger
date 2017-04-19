@@ -80,8 +80,9 @@ define(['class/assistWindow/TenhouGame'],function (TenhouGame) {
 					this.game.kyoku.addDora(parseInt(command.hai));
 					break;
 				}
+				case 'AGARI':
 				case 'RYUUKYOKU':{
-					this.game.kyoku.end('RYUUKYOKU');
+					this.game.kyoku.end(command.tag,command);
 					break;
 				}
 				case 'N': {

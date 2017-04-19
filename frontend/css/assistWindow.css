@@ -15,7 +15,22 @@ input[type=password]{ font: menu; font-size:16px; }
 #game-info::before,
 #kyoku-info::before,
 #kyoku-tehai::before,
-.suggestion-syanten::before{ font-size:14px; width:4em; display: inline-block; text-align: center; padding: 2px; background: lightpink; border-radius: 4px; margin-right: 1em; }
+.suggestion-syanten::before,
+.result-type::before,
+.result-ten::before,
+.result-yaku::before{ font-size:14px; width:4em; display: inline-block; text-align: center; padding: 2px; background: lightpink; border-radius: 4px; margin-right: 1em; }
 span.hai{ display: inline-block; }
 
 .da-suggestion .mo-suggestion{ border: none; display: inline; padding:0; margin:0 }
+
+.result{ padding: 10px; border: 1px solid lightblue; margin: 10px 0; }
+.result-type::before{ content:'状态'; }
+.result-ten::before { content: '收支'; }
+.result-yaku::before { content: '役'; position: absolute; left:0; }
+.result-yaku{ padding-left:4em; position: relative; }
+.ten.plus{ color:green; }
+.ten.plus::before{ content:'+'; }
+.ten.minus { color: red; }
+ul.result-yaku{ list-style: none; }
+ul.result-yaku li label{ display: inline-block; width:7em; margin-right: 1em; }
+.yaku-han{ text-align: center; }

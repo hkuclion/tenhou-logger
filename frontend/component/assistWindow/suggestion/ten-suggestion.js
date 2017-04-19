@@ -6,8 +6,8 @@ define(['Vue', 'component/assistWindow/hai-methods'], function (Vue,HaiMethods) 
 		template:`
 		<div class="suggestion mo-suggestion">
 			<div class="suggestion-syanten">听牌</div>
-			听 <span class="hai" v-for="hai in suggestion.data">
-				 {{displayHai(hai)}}  
+			听 <span class="hai" v-for="hai_value in suggestion.data">
+				 {{displayHaiValue(hai_value)}}  
 			</span> 共{{suggestion.count}}枚
 		</div>
 		`,
